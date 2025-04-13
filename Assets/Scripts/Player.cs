@@ -186,7 +186,8 @@ public class Player : MonoBehaviour
 
         // Jump if grounded and space is pressed
         if (isGrounded && (Input.GetKey(KeyCode.LeftArrow) || 
-            Input.GetKey(KeyCode.RightArrow) || 
+            Input.GetKey(KeyCode.RightArrow) &&
+            Input.GetKeyDown(KeyCode.Space) || 
             Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) &&
             Input.GetKeyDown(KeyCode.Space))
         {
@@ -227,13 +228,11 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
-        if (body.velocity.y <= 0f)
-        {
+     
             isGrounded = true;
             animator.SetBool("isJumping", false);
             animator.SetBool("isFalling", false);
-        }
+        
 
 
     }
