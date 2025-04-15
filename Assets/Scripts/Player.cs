@@ -161,6 +161,8 @@ public class Player : MonoBehaviour
     private float horizontalInput;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float jumpForce = 5f;
+    public int maxJumps = 2;
+    private int jumpCount = 0;
 
     private bool isGrounded = false;
     private bool facingRight = true;
@@ -184,24 +186,36 @@ public class Player : MonoBehaviour
         // Flip sprite based on direction
         Flip();
 
-        // Jump if grounded and space is pressed
-        if (isGrounded && (Input.GetKey(KeyCode.LeftArrow) || 
-            Input.GetKey(KeyCode.RightArrow) &&
-            Input.GetKeyDown(KeyCode.Space) || 
-            Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) &&
-            Input.GetKeyDown(KeyCode.Space))
-        {
-            body.velocity = new Vector2(body.velocity.x, jumpForce);
-            isGrounded = false;
-            animator.SetBool("isJumping", true);
-            animator.SetBool("isFalling", false);
+        Jump();
 
-        }
+        animator.SetFloat("xVelocity", Mathf.Abs(body.velocity.x));
+        animator.SetFloat("yVelocity", body.velocity.y);
+        animator.SetBool("isGrounded", isGrounded);
+
+        // Jump if grounded and space is pressed
+        //if (isGrounded && (Input.GetKey(KeyCode.LeftArrow) || 
+        //    Input.GetKey(KeyCode.RightArrow) &&
+        //    Input.GetKeyDown(KeyCode.Space) || 
+        //    Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) &&
+        //    Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Space))
+        //{
+        //    body.velocity = new Vector2(body.velocity.x, jumpForce);
+        //    isGrounded = false;
+        //    animator.SetBool("isJumping", true);
+        //    animator.SetBool("isFalling", false);
+
+        //}
         // Falling detection
         if (!isGrounded && body.velocity.y < -0.1f)
         {
             animator.SetBool("isFalling", true);
             animator.SetBool("isJumping", false);
+        }
+        //check if avatar landed
+        if (isGrounded)
+        {
+            animator.SetBool("isFalling", false);
+            animator.SetBool("isJumping", false); 
         }
     }
 
@@ -226,12 +240,51 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void Jump()
+    {
+        //if avatar is on the ground, then default jumpcount back to 0
+        if (isGrounded)
+        {
+            jumpCount = 0;
+        }
+
+        if ((isGrounded && (
+            //Input.GetKey(KeyCode.LeftArrow) ||
+            //Input.GetKey(KeyCode.RightArrow) ||
+            Input.GetKey(KeyCode.A) || 
+            Input.GetKey(KeyCode.D)
+            ) && Input.GetKeyDown(KeyCode.Space))
+            || (!isGrounded && jumpCount < maxJumps && Input.GetKeyDown(KeyCode.Space))
+            || isGrounded && jumpCount < maxJumps && Input.GetKeyDown(KeyCode.Space))
+        {
+            body.velocity = new Vector2(body.velocity.x, jumpForce);
+            jumpCount++;
+            isGrounded = false;
+            animator.SetBool("isJumping", true);
+            animator.SetBool("isFalling", false);
+
+        }
+
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+            jumpCount = 0;
+            animator.SetBool("isGrounded", true);
+            animator.SetBool("isFalling", false);
+            animator.SetBool("isJumping", false);
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-     
-            isGrounded = true;
-            animator.SetBool("isJumping", false);
-            animator.SetBool("isFalling", false);
+
+        isGrounded = true;
+        animator.SetBool("isGrounded", true);
+        animator.SetBool("isJumping", false);
+        animator.SetBool("isFalling", false);
         
 
 
