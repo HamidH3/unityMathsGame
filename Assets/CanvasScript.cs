@@ -5,21 +5,34 @@ using UnityEngine;
 public class CanvasScript : MonoBehaviour
 {
     public GameObject QPanel;
+    public GameObject MainMenu;
+
     public Player player;
     // Start is called before the first frame update
+   
     private void Start()
     {
-        player = FindObjectOfType<Player>(); 
-    }
+        MainMenu.SetActive(true);
+        QPanel.SetActive(false);
+        player.DisableMovement();
+        Time.timeScale = 0f;
 
+
+    }
+    
     public void QPanelClose()
     {
         QPanel.SetActive(false);
         Time.timeScale = 1f;
+        player.EnableMovement();
+    }
 
-        if (player != null)
-        {
-            player.EnableMovement(); 
+    public void StartGame()
+    {
+        MainMenu.SetActive(false);
+        Time.timeScale = 1f;
+        if (player != null) {
+            player.EnableMovement();
         }
     }
 }

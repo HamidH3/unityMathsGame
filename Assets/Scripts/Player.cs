@@ -153,6 +153,10 @@ public class Player : MonoBehaviour
     {
         canMove = true;
     }
+    public void DisableMovement()
+    {
+        canMove = false;
+    }
 
     public void QPanelOpen()
     {   
