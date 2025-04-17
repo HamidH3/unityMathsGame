@@ -2388,6 +2388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab609f135052ae94d8cecefed296448a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  QuestionGeneratorObj: {fileID: 1270168839}
 --- !u!1 &978857933
 GameObject:
   m_ObjectHideFlags: 0
@@ -2873,7 +2874,7 @@ GameObject:
   - component: {fileID: 1104272625}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3324,6 +3325,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   questionText: {fileID: 48167546}
+  ansButtons:
+  - {fileID: 66229966}
+  - {fileID: 105678514}
+  - {fileID: 1924311686}
 --- !u!4 &1270168841
 Transform:
   m_ObjectHideFlags: 0

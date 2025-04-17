@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class CanvasScript : MonoBehaviour
 {
+    public GameObject MainScreenOverlay;
     public GameObject QPanel;
     public GameObject MainMenu;
+
 
     public Player player;
     // Start is called before the first frame update
@@ -34,5 +36,6 @@ public class CanvasScript : MonoBehaviour
         if (player != null) {
             player.EnableMovement();
         }
+        MainScreenOverlay.SetActive(true);
     }
 }
