@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - Q-Box
   layers:
   - Default
   - TransparentFX
