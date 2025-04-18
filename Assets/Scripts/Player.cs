@@ -34,15 +34,19 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        if (!canMove) return;
         
         // Get horizontal input
         horizontalInput = Input.GetAxis("Horizontal");
 
-        MoveHorizontally();
-        // Flip sprite based on direction
-        Flip();
-
-        Jump();
+        if (canMove)
+        {
+            MoveHorizontally();
+            // Flip sprite based on direction
+            Jump();
+            Flip();
+        }
+        
 
         animator.SetFloat("xVelocity", Mathf.Abs(body.velocity.x));
         animator.SetFloat("yVelocity", body.velocity.y);
@@ -161,7 +165,7 @@ public class Player : MonoBehaviour
     public void QPanelOpen()
     {   
         QPanel.SetActive(true);
-        canMove = false;
+        DisableMovement();
 
     }
  
