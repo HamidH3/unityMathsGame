@@ -126,6 +126,17 @@ public class CanvasScript : MonoBehaviour
         }
 
     }
+    public void QPanelOpen()
+    {
+        QPanel.SetActive(true);
+        player.DisableMovement();
 
-    
+        //// Set animator to Idle state
+        player.animator.SetFloat("xVelocity", 0f);
+        player.animator.SetFloat("yVelocity", 0f);
+
+
+    }
+
+
 }

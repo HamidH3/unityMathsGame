@@ -43,11 +43,13 @@ public class QuestionGenerator : MonoBehaviour
     public GameObject QPanel;
     public Player player;
 
+    private string apiKey = EnvLoaderAPIKey.GetEnv("API_KEY");
     private string correctAns = "";
-    private string apiKey = ""; // <-- replace this with your OpenAI key
+    //private string apiKey = ""; // <-- replace this with your OpenAI key
 
     public void Start()
     {
+        Debug.Log("Loaded API Key: " + apiKey);
         points = 0;
         level = 1;
         health = 5;
@@ -55,7 +57,7 @@ public class QuestionGenerator : MonoBehaviour
     }
     public void GenerateQuestion()
     {
-        Debug.Log("Generating question...");
+        //Debug.Log("Generating question...");
         if (!isGenerating)
         {
             StartCoroutine(CallGPTForQuestion());
@@ -167,25 +169,35 @@ public class QuestionGenerator : MonoBehaviour
 
     public void CheckAns(string chosenAns)
     {
-        if (chosenAns == correctAns)
+        correct = false;
+        if (questionText.text != "Generating question...")
         {
-            correct = true;
+            if (chosenAns == correctAns)
+            {
+                correct = true;
+                points++;
+
+            }
+            else if (chosenAns != correctAns)
+            {
+                health--;
+            }
+            questionHistory.Add(new QuestionData(questionText.text, chosenAns, correctAns, correct));
         }
         
 
-        if (correct)
-        {
-            points++;
-        }
-        else
-        {
-            health--;
-        }
+
+
+        //if (correct)
+        //{
+        //    points++;
+        //}
+        //else
+        //{
+        //    health--;
+        //}
         //this now stores the relevant data of our questions inside of a list
-        if (questionText.text != "Generating question...")
-        {
-            questionHistory.Add(new QuestionData(questionText.text, chosenAns, correctAns, correct));
-        }
+       
 
         if (points >= 0 && points <=3 )
         {
@@ -206,6 +218,7 @@ public class QuestionGenerator : MonoBehaviour
 
     public void OnButtonPressed(int i)
     {
+        Debug.Log(ansButtons[i]);
         CheckAns(ansButtons[i].text);
     }
 

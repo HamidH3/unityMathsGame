@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public GameObject QPanel;
+    //public GameObject QPanel;
 
     private float horizontalInput;
     [SerializeField] private float moveSpeed = 5f;
@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
     private bool canMove = true;
 
     private Rigidbody2D body;
-    private Animator animator;
+    public Animator animator;
 
     private void Awake()
     {
@@ -29,7 +29,7 @@ public class Player : MonoBehaviour
     private void Start()
     {
         canMove = true;
-        QPanel.SetActive(false);
+        //QPanel.SetActive(false);
     }
 
     private void Update()
@@ -117,8 +117,6 @@ public class Player : MonoBehaviour
             animator.SetBool("isFalling", false);
 
         }
-
-
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -136,20 +134,23 @@ public class Player : MonoBehaviour
     {
         //this is if player comes in contact with the ground, jumping/falling
         //animations turn off, and isGrounded triggers idle/running animations.
-        isGrounded = true;
-        animator.SetBool("isGrounded", true);
-        animator.SetBool("isJumping", false);
-        animator.SetBool("isFalling", false);
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+            animator.SetBool("isGrounded", true);
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isFalling", false);
+        }
 
 
         //shows question panel if player comes in contact with Q-Box
-        if (collision.gameObject.CompareTag("Q-Box"))
-        {
-            if (QPanel != null)
-            {
-                QPanelOpen();
-            }
-        }
+        //if (collision.gameObject.CompareTag("Q-Box"))
+        //{
+        //    if (QPanel != null)
+        //    {
+        //        QPanelOpen();
+        //    }
+        //}
 
     }
 
@@ -162,12 +163,21 @@ public class Player : MonoBehaviour
         canMove = false;
     }
 
-    public void QPanelOpen()
-    {   
-        QPanel.SetActive(true);
-        DisableMovement();
+    //public void QPanelOpen()
+    //{   
+    //    QPanel.SetActive(true);
+    //    DisableMovement();
 
-    }
+    //    //body.velocity = Vector2.zero;
+
+    //    //// Set animator to Idle state
+    //    animator.SetFloat("xVelocity", 0f);
+    //    animator.SetFloat("yVelocity", 0f);
+    //    //animator.SetBool("isJumping", false);
+    //    //animator.SetBool("isFalling", false);
+    //    //animator.SetBool("isGrounded", true);
+
+    //}
  
 
 
