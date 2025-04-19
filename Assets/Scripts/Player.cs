@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections;
 
 public class Player : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class Player : MonoBehaviour
     private Rigidbody2D body;
     public Animator animator;
 
+    //moving platforms
+    private MovingFloatingPlatform currPlatform;
+
     private void Awake()
     {
         body = GetComponent<Rigidbody2D>();
@@ -29,7 +33,6 @@ public class Player : MonoBehaviour
     private void Start()
     {
         canMove = true;
-        //QPanel.SetActive(false);
     }
 
     private void Update()
@@ -63,6 +66,10 @@ public class Player : MonoBehaviour
         {
             animator.SetBool("isFalling", false);
             animator.SetBool("isJumping", false); 
+        }
+        if (currPlatform != null)
+        {
+            transform.position += currPlatform.deltaMovement; // Move player with the platform
         }
     }
 
@@ -120,6 +127,22 @@ public class Player : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (collision.gameObject.CompareTag("FloatingPlatform"))
+        {
+            MovingFloatingPlatform platform = collision.gameObject.GetComponent<MovingFloatingPlatform>();
+            if (platform != null)
+            {
+                currPlatform = platform;
+                isGrounded = true;
+                jumpCount = 0;
+                animator.SetBool("isGrounded", true);
+                animator.SetBool("isFalling", false);
+                animator.SetBool("isJumping", false);
+
+            }
+
+        }
+
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
@@ -128,9 +151,37 @@ public class Player : MonoBehaviour
             animator.SetBool("isFalling", false);
             animator.SetBool("isJumping", false);
         }
+
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+
+
+        if (collision.gameObject.CompareTag("FloatingPlatform"))
+        {
+            currPlatform = null;
+            //isGrounded = false;
+            //animator.SetBool("isGrounded", false);
+        }
+    }
+
+
+        //}
+
+        //public void LateUpdate()
+        //{
+
+        //    //for platform movement, tracks movement by frame using deltaMovement. if player is standing on it, 
+        //    //same movement is added to the player.
+        //    if (currPlatform != null)
+        //    {
+        //        transform.position += currPlatform.deltaMovement;
+        //    }
+        //}
+
+
+        private void OnTriggerEnter2D(Collider2D collision)
     {
         //this is if player comes in contact with the ground, jumping/falling
         //animations turn off, and isGrounded triggers idle/running animations.
@@ -143,15 +194,6 @@ public class Player : MonoBehaviour
         }
 
 
-        //shows question panel if player comes in contact with Q-Box
-        //if (collision.gameObject.CompareTag("Q-Box"))
-        //{
-        //    if (QPanel != null)
-        //    {
-        //        QPanelOpen();
-        //    }
-        //}
-
     }
 
     public void EnableMovement()
@@ -163,21 +205,7 @@ public class Player : MonoBehaviour
         canMove = false;
     }
 
-    //public void QPanelOpen()
-    //{   
-    //    QPanel.SetActive(true);
-    //    DisableMovement();
 
-    //    //body.velocity = Vector2.zero;
-
-    //    //// Set animator to Idle state
-    //    animator.SetFloat("xVelocity", 0f);
-    //    animator.SetFloat("yVelocity", 0f);
-    //    //animator.SetBool("isJumping", false);
-    //    //animator.SetBool("isFalling", false);
-    //    //animator.SetBool("isGrounded", true);
-
-    //}
  
 
 

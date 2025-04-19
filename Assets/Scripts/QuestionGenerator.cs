@@ -46,7 +46,7 @@ public class QuestionGenerator : MonoBehaviour
     private bool isGenerating = false;
     private int points = 0;
     private int level = 1;
-    private int health = 5;
+    private int health = 50;
 
     public GameObject QPanel;
     public Player player;
@@ -60,7 +60,7 @@ public class QuestionGenerator : MonoBehaviour
         Debug.Log("Loaded API Key: " + apiKey);
         points = 0;
         level = 1;
-        health = 5;
+        health = 50;
         UpdateMainScreenOverlay();
     }
     public void GenerateQuestion()

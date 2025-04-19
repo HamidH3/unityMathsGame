@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - Q-Box
+  - FloatingPlatform
   layers:
   - Default
   - TransparentFX
