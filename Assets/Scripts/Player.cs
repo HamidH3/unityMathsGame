@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     private bool isGrounded = false;
     private bool facingRight = true;
     private bool canMove = true;
+    private bool isTouchingWall = false;
 
     private Rigidbody2D body;
     public Animator animator;
@@ -60,6 +61,8 @@ public class Player : MonoBehaviour
         {
             animator.SetBool("isFalling", true);
             animator.SetBool("isJumping", false);
+
+            
         }
         //check if avatar landed
         if (isGrounded)
@@ -70,6 +73,12 @@ public class Player : MonoBehaviour
         if (currPlatform != null)
         {
             transform.position += currPlatform.deltaMovement; // Move player with the platform
+        }
+        HandleWallSliding();
+
+        if (isTouchingWall && !isGrounded && Input.GetKeyDown(KeyCode.W))
+        {
+            JumpOffWall();
         }
     }
 
@@ -122,6 +131,44 @@ public class Player : MonoBehaviour
             isGrounded = false;
             animator.SetBool("isJumping", true);
             animator.SetBool("isFalling", false);
+            animator.SetBool("isWallSliding", false);
+
+        }
+    }
+
+    private void HandleWallSliding()
+    {
+        bool pressingTowardWall = (facingRight && horizontalInput > 0) || (!facingRight && horizontalInput < 0);
+        bool shouldWallSlide = !isGrounded && body.velocity.y < 0 && isTouchingWall && pressingTowardWall;
+
+        if (shouldWallSlide)
+        {
+            // Prevent horizontal movement while wall sliding
+            body.velocity = new Vector2(0, body.velocity.y);  // Keep vertical velocity, no horizontal movement
+
+            // Set the animator parameter for wall sliding
+            animator.SetBool("isWallSliding", true);
+            animator.SetBool("isJumping", false);  // Ensure jumping state is false when wall sliding
+            animator.SetBool("isFalling", false);  // Ensure falling state is false when wall sliding
+        }
+        else
+        {
+            
+            // Transition back to falling animation if not wall sliding
+
+            // Transition to falling if velocity is downward and player isn't on the wall
+            if (!isTouchingWall && !isGrounded && body.velocity.y < 0)
+            {
+                //this is free falling
+                animator.SetBool("isWallSliding", false);
+                animator.SetBool("isFalling", true);
+                animator.SetBool("isJumping", false);
+            }
+            else if (isGrounded)
+            {
+                animator.SetBool("isWallSliding", false);  // Stop wall sliding animation
+                animator.SetBool("isFalling", false);  // Transition to idle or running
+            }
 
         }
     }
@@ -138,6 +185,8 @@ public class Player : MonoBehaviour
                 animator.SetBool("isGrounded", true);
                 animator.SetBool("isFalling", false);
                 animator.SetBool("isJumping", false);
+                animator.SetBool("isWallSliding", false); 
+
 
             }
 
@@ -150,38 +199,40 @@ public class Player : MonoBehaviour
             animator.SetBool("isGrounded", true);
             animator.SetBool("isFalling", false);
             animator.SetBool("isJumping", false);
+            animator.SetBool("isWallSliding", false);
         }
 
+    }
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall") && !isGrounded)
+        {
+            isTouchingWall = true;
+        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            isTouchingWall = false;
+            animator.SetBool("isWallSliding", false);
+            animator.SetBool("isFalling", true);
+        }
 
 
         if (collision.gameObject.CompareTag("FloatingPlatform"))
         {
             currPlatform = null;
-            //isGrounded = false;
-            //animator.SetBool("isGrounded", false);
+            
         }
+     
     }
+   
 
 
-        //}
-
-        //public void LateUpdate()
-        //{
-
-        //    //for platform movement, tracks movement by frame using deltaMovement. if player is standing on it, 
-        //    //same movement is added to the player.
-        //    if (currPlatform != null)
-        //    {
-        //        transform.position += currPlatform.deltaMovement;
-        //    }
-        //}
-
-
-        private void OnTriggerEnter2D(Collider2D collision)
+  
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         //this is if player comes in contact with the ground, jumping/falling
         //animations turn off, and isGrounded triggers idle/running animations.
@@ -194,6 +245,19 @@ public class Player : MonoBehaviour
         }
 
 
+    }
+
+
+    public void JumpOffWall()
+    {
+        if (isTouchingWall && !isGrounded)
+        {
+            body.velocity = new Vector2(facingRight ? -jumpForce : jumpForce, jumpForce);
+            isTouchingWall = false;
+            animator.SetBool("isWallSliding", false);  // Stop wall sliding after jumping off
+            animator.SetBool("isJumping", true);
+            animator.SetBool("isFalling", false);
+        }
     }
 
     public void EnableMovement()
