@@ -106,9 +106,9 @@ public class Player : MonoBehaviour
             //Input.GetKey(KeyCode.RightArrow) ||
             Input.GetKey(KeyCode.A) ||
             Input.GetKey(KeyCode.D)
-            ) && Input.GetKeyDown(KeyCode.Space))
-            || (!isGrounded && jumpCount < maxJumps && Input.GetKeyDown(KeyCode.Space))
-            || isGrounded && jumpCount < maxJumps && Input.GetKeyDown(KeyCode.Space))
+            ) && Input.GetKeyDown(KeyCode.W))
+            || (!isGrounded && jumpCount < maxJumps && Input.GetKeyDown(KeyCode.W))
+            || isGrounded && jumpCount < maxJumps && Input.GetKeyDown(KeyCode.W))
         {
             body.velocity = new Vector2(body.velocity.x, jumpForce);
             jumpCount++;

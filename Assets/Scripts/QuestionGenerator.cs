@@ -24,9 +24,16 @@ public class QuestionData
 }
 public class QuestionGenerator : MonoBehaviour
 {
+    //TMP question and answer areas
     public TMP_Text questionText;
     public TMP_Text[] ansButtons;
 
+    //timer
+    public TMP_Text timerText;
+    private Coroutine timerCoroutine;
+    private bool isAnswered = false;
+    
+    //values that change on top right of UI
     public TMP_Text levelText;
     public TMP_Text pointsText;
     public TMP_Text healthBar;
@@ -35,6 +42,7 @@ public class QuestionGenerator : MonoBehaviour
     private List<QuestionData> questionHistory = new List<QuestionData>();
     public bool correct = false;
 
+    //initialising values
     private bool isGenerating = false;
     private int points = 0;
     private int level = 1;
@@ -69,6 +77,7 @@ public class QuestionGenerator : MonoBehaviour
     {
         isGenerating = true;
         questionText.text = "Generating question...";
+        isAnswered = false;
 
 
         string prompt = "";
@@ -162,13 +171,49 @@ public class QuestionGenerator : MonoBehaviour
                 {
                     ansButtons[j].text = answers[j];
                 }
+
+                //here start the timer when the question and answers are generated (when this method
+                //is called in GenerateQuestion, which is directly called in MathsBox.cs)
+                if (timerCoroutine != null)
+                {
+                    StopCoroutine(timerCoroutine);
+                }
+                timerCoroutine = StartCoroutine(StartTimer(10));
             }
             isGenerating = false;
         }
     }
 
+    IEnumerator StartTimer(int secs)
+    {
+        int timeLeft = secs;
+        while ( timeLeft> 0) 
+        {
+            timerText.text = $"Time: {timeLeft}";
+            yield return new WaitForSeconds(1f);
+            timeLeft--;
+
+            if (isAnswered)
+            {
+                yield break;
+            }
+        }
+        timerText.text = "TIMES UP!";
+        health--;
+        questionHistory.Add(new QuestionData(questionText.text, "None", correctAns, false));
+        UpdateMainScreenOverlay();
+        yield return new WaitForSeconds(1f);
+        StartCoroutine(QPanelClose());
+    }
+
     public void CheckAns(string chosenAns)
     {
+        isAnswered = true;
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+        }
+
         correct = false;
         if (questionText.text != "Generating question...")
         {
@@ -182,22 +227,10 @@ public class QuestionGenerator : MonoBehaviour
             {
                 health--;
             }
+            //this now stores the relevant data of our questions inside of a list
             questionHistory.Add(new QuestionData(questionText.text, chosenAns, correctAns, correct));
         }
-        
-
-
-
-        //if (correct)
-        //{
-        //    points++;
-        //}
-        //else
-        //{
-        //    health--;
-        //}
-        //this now stores the relevant data of our questions inside of a list
-       
+           
 
         if (points >= 0 && points <=3 )
         {
@@ -225,6 +258,8 @@ public class QuestionGenerator : MonoBehaviour
     IEnumerator QPanelClose()
     {
         QPanel.SetActive(false);
+        //reset timer text
+        timerText.text = "";
         Time.timeScale = 1f;
         yield return null;
         player.EnableMovement();
