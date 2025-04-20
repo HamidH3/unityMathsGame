@@ -10,6 +10,7 @@ public class CanvasScript : MonoBehaviour
     public GameObject QPanel;
     public GameObject MainMenu;
     public GameObject PauseMenu;
+    public GameObject BillBoardCloseup;
 
     private bool isPaused = false;
     public TMP_Text questionHistoryText;
@@ -138,5 +139,18 @@ public class CanvasScript : MonoBehaviour
 
     }
 
+
+    //billboard
+
+    public void BillBoardClose()
+    {
+        if (BillBoardCloseup != null)
+        {
+            BillBoardCloseup.SetActive(false);
+            Time.timeScale = 1f;
+            player.EnableMovement();
+        }
+
+    }
 
 }
