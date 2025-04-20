@@ -171,12 +171,25 @@ public class QuestionGenerator : MonoBehaviour
                 {
                     ansButtons[j].text = answers[j];
                 }
+                //check if you closed the qpanel before timer started
+                if (!QPanel.activeSelf)
+                {
+                    Debug.Log("QPanel was closed before timer start. Timer will not run.");
+                    isGenerating = false;
+                    yield break;
+                }
 
                 //here start the timer when the question and answers are generated (when this method
                 //is called in GenerateQuestion, which is directly called in MathsBox.cs)
                 if (timerCoroutine != null)
                 {
+
                     StopCoroutine(timerCoroutine);
+                }
+                if (!QPanel.activeSelf)
+                {
+                    isGenerating = false;
+                    yield break; // don't run timer if question panel is closed
                 }
                 timerCoroutine = StartCoroutine(StartTimer(10));
             }
@@ -186,9 +199,19 @@ public class QuestionGenerator : MonoBehaviour
 
     IEnumerator StartTimer(int secs)
     {
+        //check if qpanel is closed even after timer started
+       
+
+
         int timeLeft = secs;
         while ( timeLeft> 0) 
         {
+            if (!QPanel.activeSelf)
+                //if panel was closed during timer, stop timer
+            {
+                Debug.Log("StartTimer aborted: QPanel was closed.");
+                yield break;
+            }
             timerText.text = $"Time: {timeLeft}";
             yield return new WaitForSeconds(1f);
             timeLeft--;
@@ -258,6 +281,14 @@ public class QuestionGenerator : MonoBehaviour
     IEnumerator QPanelClose()
     {
         QPanel.SetActive(false);
+        //this ensures that even if you close the QPanel manually,
+        //the timer is set to null so a health doesnt decremenet even if you didnt answer
+        if (timerCoroutine != null)
+        {
+            StopCoroutine(timerCoroutine);
+            timerCoroutine = null;
+        }
+        isAnswered = true;
         //reset timer text
         timerText.text = "";
         Time.timeScale = 1f;

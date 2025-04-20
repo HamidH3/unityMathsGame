@@ -7,6 +7,7 @@ TagManager:
   - Ground
   - Q-Box
   - FloatingPlatform
+  - Wall
   layers:
   - Default
   - TransparentFX
