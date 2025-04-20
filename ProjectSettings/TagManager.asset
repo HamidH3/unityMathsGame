@@ -8,6 +8,7 @@ TagManager:
   - Q-Box
   - FloatingPlatform
   - Wall
+  - Cave
   layers:
   - Default
   - TransparentFX
@@ -47,4 +48,7 @@ TagManager:
     locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: cavebackground
+    uniqueID: 1694875719
     locked: 0
