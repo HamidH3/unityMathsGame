@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
+using UnityEngine.UI;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 
@@ -33,10 +34,13 @@ public class QuestionGenerator : MonoBehaviour
     private Coroutine timerCoroutine;
     private bool isAnswered = false;
     
-    //values that change on top right of UI
+    //MainScreenOverlay
     public TMP_Text levelText;
     public TMP_Text pointsText;
     public TMP_Text healthBar;
+    public RawImage KeyImage;
+   
+    public bool HasKey => hasKey;//this makes (read-only) boolean HasKey public
 
     //use List of QuestionData type, which contains question, playerAns, correctAns, and also bool isCorrect
     private List<QuestionData> questionHistory = new List<QuestionData>();
@@ -44,9 +48,11 @@ public class QuestionGenerator : MonoBehaviour
 
     //initialising values
     private bool isGenerating = false;
-    private int points = 0;
-    private int level = 1;
-    private int health = 50;
+    public int points = 0;
+    public int level = 1;
+    public int health = 50;
+    public int maxHealth = 50;
+    private bool hasKey = false;
 
     public GameObject QPanel;
     public Player player;
@@ -61,6 +67,8 @@ public class QuestionGenerator : MonoBehaviour
         points = 0;
         level = 1;
         health = 50;
+        maxHealth = 50;
+        SetKeyFaded(!hasKey);
         UpdateMainScreenOverlay();
     }
     public void GenerateQuestion()
@@ -307,6 +315,28 @@ public class QuestionGenerator : MonoBehaviour
     {
         //returns list of type QuestionData with relevant q/a info
         return questionHistory;
+    }
+
+
+
+    public void SetKeyFaded(bool faded)
+    {
+        if (KeyImage != null)
+        {
+            Color iconColor = KeyImage.color;
+            iconColor.a = faded ? 0.1f : 1f; // 0.5 = semi-transparent
+            KeyImage.color = iconColor;
+        }
+    }
+    public void UpdateKeyImageColour()
+    {
+        SetKeyFaded(!hasKey);
+    }
+
+    public void HasKeyValue()
+    {
+        hasKey = true;
+        UpdateKeyImageColour();
     }
 
 }

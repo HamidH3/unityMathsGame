@@ -11,6 +11,8 @@ public class CanvasScript : MonoBehaviour
     public GameObject MainMenu;
     public GameObject PauseMenu;
     public GameObject BillBoardCloseup;
+    public GameObject ShopPanel;
+
 
     private bool isPaused = false;
     public TMP_Text questionHistoryText;
@@ -147,6 +149,20 @@ public class CanvasScript : MonoBehaviour
         if (BillBoardCloseup != null)
         {
             BillBoardCloseup.SetActive(false);
+            Time.timeScale = 1f;
+            player.EnableMovement();
+        }
+
+    }
+
+
+    //shop
+    public void ExitShop()
+    {
+
+        if (ShopPanel != null)
+        {
+            ShopPanel.SetActive(false);
             Time.timeScale = 1f;
             player.EnableMovement();
         }
