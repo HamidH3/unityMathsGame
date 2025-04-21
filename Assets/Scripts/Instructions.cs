@@ -1,23 +1,6 @@
-
-//using UnityEngine;
-
-//public class Instructions : MonoBehaviour
-//{
-//    public CanvasScript canvasScript; // Reference to the UI manager
-
-//    private void OnMouseDown()
-//    {
-//        if (canvasScript != null)
-//        {
-//            canvasScript.BillBoardCloseup.SetActive(true);
-//            canvasScript.player.DisableMovement();
-//        }
-
-//    }
-//}
-
-
+using System;
 using UnityEngine;
+using System.Collections;
 
 public class Instructions : MonoBehaviour
 {
@@ -39,4 +22,7 @@ public class Instructions : MonoBehaviour
             player.DisableMovement();
         }
     }
+
+
+ 
 }

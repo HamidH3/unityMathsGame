@@ -39,7 +39,9 @@ public class QuestionGenerator : MonoBehaviour
     public TMP_Text pointsText;
     public TMP_Text healthBar;
     public RawImage KeyImage;
-   
+
+    public List<RawImage> fuelBars;
+
     public bool HasKey => hasKey;//this makes (read-only) boolean HasKey public
 
     //use List of QuestionData type, which contains question, playerAns, correctAns, and also bool isCorrect
@@ -69,6 +71,7 @@ public class QuestionGenerator : MonoBehaviour
         health = 50;
         maxHealth = 50;
         SetKeyFaded(!hasKey);
+        UpdateFuelBars(0);
         UpdateMainScreenOverlay();
     }
     public void GenerateQuestion()
@@ -274,6 +277,7 @@ public class QuestionGenerator : MonoBehaviour
         else if (points >= 6 && points <=9)
         {
             level = 3;
+            GameObject.Find("CaveDoor").GetComponent<CaveDoor>().OpenCave();
         }
 
         UpdateMainScreenOverlay();
@@ -318,7 +322,8 @@ public class QuestionGenerator : MonoBehaviour
     }
 
 
-
+    //this is for the key, which the info is passed onto FindKey script if CollectKey has been called
+    //(meaning the key has been clicked, and collected, turning hasKey to true)
     public void SetKeyFaded(bool faded)
     {
         if (KeyImage != null)
@@ -333,11 +338,29 @@ public class QuestionGenerator : MonoBehaviour
         SetKeyFaded(!hasKey);
     }
 
-    public void HasKeyValue()
+    public void CollectKey()
     {
         hasKey = true;
         UpdateKeyImageColour();
     }
+
+
+    //fuel bar for main menu overlay
+    public void UpdateFuelBars(int fuel)
+    {
+        foreach (var bar in fuelBars)
+        {
+            bar.enabled = false;
+        }
+        for (int i = 0; i < fuel; i++)
+            if (i < fuelBars.Count)
+            {
+                fuelBars[i].enabled = true; 
+            }
+    }
+
+
+
 
 }
 
