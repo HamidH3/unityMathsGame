@@ -13,6 +13,8 @@ public class ShopController : MonoBehaviour
     public int fuel = 0;
     public int maxFuelBar = 3;
     public int fuelCost = 5;
+    public bool hasEnoughFuel = false;
+    public bool HasEnoughFuel => hasEnoughFuel;
     //health buttons
     private int healthToBuy = 0;
     private const int healthIncrease = 5;
@@ -24,7 +26,6 @@ public class ShopController : MonoBehaviour
 
 
     public QuestionGenerator questionGenerator;
-    //public GameObject keyIcon;
     // Start is called before the first frame update
 
     private enum ShopItem
@@ -39,11 +40,11 @@ public class ShopController : MonoBehaviour
     public void SelectHealth()
     {
         selectedItem = ShopItem.Health;
-        narrator.ShowMessage("Selected: +5 Health for 1 point. Click 'Buy' to confirm");
+        narrator.ShowMessage("Selected: +5 Health for 1 point. Click 'Buy' to confirm!");
     }
     public void SelectFuel() {
         selectedItem = ShopItem.Fuel;
-        narrator.ShowMessage("Selected: 1 bar of Fuel for 5 points. Click 'Buy' to confirm");
+        narrator.ShowMessage("Selected: +1 bar of Fuel for 5 points. Choose how much you want!");
     }
 
     public void BuyToConfirm()
@@ -68,17 +69,9 @@ public class ShopController : MonoBehaviour
         if (questionGenerator == null) return;
         selectedItem = ShopItem.Health;
 
-        //int totalHealth = questionGenerator.health + (healthToBuy + 1) * healthIncrease;
-
-        //if (questionGenerator.points > healthToBuy && totalHealth <= questionGenerator.maxHealth)
-        //{
             healthToBuy++;
             UpdateHealthCounter();
-        //}
-        //else
-        //{
-        //    ShowMessage("Can't add more — not enough points or would exceed max health.");
-        //}
+
     }
 
     public void DecreaseHealth()
@@ -96,59 +89,6 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    //public void TryBuyHealth()
-    //{
-    //    if (questionGenerator == null || healthToBuy == 0)
-    //    {
-    //        ShowMessage("You must choose how much health to buy!");
-    //        return;
-    //    }
-
-    //    int totalCost = healthToBuy;
-    //    int totalHealth = healthToBuy * healthIncrease;
-    //    Debug.LogError("totalHealth" + totalHealth);
-    //    Debug.LogError("totalCost" + totalCost);
-
-    //    if (questionGenerator.points < totalCost)
-    //    //&& questionGenerator.health + totalHealth <= questionGenerator.maxHealth
-    //    {
-    //        ShowMessage("Not Enough Points, Sorry");
-    //        return;
-    //    }
-    //    if (questionGenerator.health == questionGenerator.maxHealth)
-    //    {
-    //        ShowMessage("You have enough health! Come back later");
-    //        return;
-    //    }
-
-    //    //else if (questionGenerator.points < 1 && questionGenerator.health + totalHealth > 45)
-    //    //{
-    //    //    ShowMessage("Not Enough Points, and you have enough health!");
-    //    //}
-
-    //    //if (questionGenerator.points >= totalCost && questionGenerator.health + totalHealth <= questionGenerator.maxHealth)
-    //    //{
-    //    //if(question)
-    //    questionGenerator.health += totalHealth;
-    //    questionGenerator.points -= totalCost;
-    //    if (questionGenerator.health > 50)
-    //    {
-    //        questionGenerator.health = 50;
-    //    }
-    //    questionGenerator.UpdateMainScreenOverlay();
-    //    ShowMessage($"You bought {totalHealth} Health for {totalCost} points!");
-    //    healthToBuy = 0;
-    //    UpdateHealthCounter();
-    //}
-
-    ////else if (questionGenerator.health + totalHealth > 45 && questionGenerator.points >= 1)
-    ////{
-    ////    ShowMessage("You have enough health! Come back later");
-    ////}
-    ////else if (questionGenerator.heaxlth + totalHealth > 45 && questionGenerator.points < 1)
-    ////{
-    ////    ShowMessage("You have enough health! Come back later");
-    ////}
 
     public void TryBuyHealth()
     {
@@ -160,7 +100,7 @@ public class ShopController : MonoBehaviour
 
         int totalHealth = healthToBuy * healthIncrease;
         int missingHealth = questionGenerator.maxHealth - questionGenerator.health;
-
+        //assuming the player is at full health beause missingHealth calculates the difference between max health and the health you have
         if (missingHealth == 0)
         {
             narrator.ShowMessage("You already have max health!");
@@ -182,22 +122,33 @@ public class ShopController : MonoBehaviour
         questionGenerator.health += actualHealthToAdd;
         questionGenerator.points -= actualPointsToSpend;
 
+        questionGenerator.UpdateHealthBarFill(questionGenerator.health);
+
         questionGenerator.UpdateMainScreenOverlay();
         narrator.ShowMessage($"You bought {actualHealthToAdd} health for {actualPointsToSpend} point(s).");
 
         healthToBuy = 0;
         UpdateHealthCounter();
     }
+    private void UpdateHealthCounter()
+    {
+        string msg = $"{healthToBuy}";
+        if (healthCounterText != null)
+        {
+            healthCounterText.text = msg;
+        }
+
+    }
 
 
     public void TryBuyFuel()
     {
-        //int fuelCost = 5;
-        //int maxFuelBar = 3;
+
 
         if (fuel >= maxFuelBar)
         {
             narrator.ShowMessage("Fuel tank is already full!");
+            hasEnoughFuel = true;
             return;
         }
 
@@ -216,6 +167,10 @@ public class ShopController : MonoBehaviour
             }   
             questionGenerator.UpdateFuelBars(fuel);
             questionGenerator.UpdateMainScreenOverlay();
+            if (fuel >= maxFuelBar)
+            {
+                hasEnoughFuel = true;
+            }
         } 
 
         narrator.ShowMessage($"Purchased 1 fuel bar for {fuelCost} points. Current fuel: {fuel}/{maxFuelBar}");
@@ -223,46 +178,12 @@ public class ShopController : MonoBehaviour
 
 
 
-    private void UpdateHealthCounter()
-    {
-        string msg = $"{healthToBuy}";
-        if (healthCounterText != null)
-        {
-            healthCounterText.text = msg;
-        }
-        
-    }
-
-    
-    //private void ShowMessage(string message)
-    //{
-    //    if (shopMessageText != null)
-    //    {
-    //        if (messageCoroutine != null)
-    //        {
-    //            StopCoroutine(messageCoroutine);
-    //        }
-    //        messageCoroutine = StartCoroutine(TypeWriterEffect(message));
-    //    }
-
-    //}
-    //private IEnumerator TypeWriterEffect(string msg)
-    //{
-    //    shopMessageText.text = "";
-    //    foreach (char c in msg)
-    //    {
-    //        shopMessageText.text += c;
-    //        yield return new WaitForSeconds(0.04f);
-    //    }
-    //    messageCoroutine = null;
-    //}
-
-
 
     void Start()
     {
         questionGenerator.UpdateKeyImageColour();
         UpdateHealthCounter();
+        questionGenerator.UpdateHealthBarFill(questionGenerator.health);
     }
 
 

@@ -12,6 +12,7 @@ public class CanvasScript : MonoBehaviour
     public GameObject PauseMenu;
     public GameObject BillBoardCloseup;
     public GameObject ShopPanel;
+    public GameObject EndMenu;
 
 
     private bool isPaused = false;
@@ -23,6 +24,7 @@ public class CanvasScript : MonoBehaviour
     private void Start()
     {
         MainMenu.SetActive(true);
+        EndMenu.SetActive(false);
         QPanel.SetActive(false);
         player.DisableMovement();
         Time.timeScale = 0f;
@@ -139,6 +141,17 @@ public class CanvasScript : MonoBehaviour
         player.animator.SetFloat("yVelocity", 0f);
 
 
+    }
+    //End Menu
+    public void EndMenuOpen()
+    {
+        EndMenu.SetActive(true);
+        player.DisableMovement();
+    }
+    public void PlayAgainButton()
+    {
+        EndMenu.SetActive(false);
+        MainMenu.SetActive(true);
     }
 
 

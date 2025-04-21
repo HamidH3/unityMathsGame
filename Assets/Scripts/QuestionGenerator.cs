@@ -38,6 +38,8 @@ public class QuestionGenerator : MonoBehaviour
     public TMP_Text levelText;
     public TMP_Text pointsText;
     public TMP_Text healthBar;
+    public Image healthBarFill;
+    private float prevFill = -1f;
     public RawImage KeyImage;
 
     public List<RawImage> fuelBars;
@@ -52,8 +54,8 @@ public class QuestionGenerator : MonoBehaviour
     private bool isGenerating = false;
     public int points = 0;
     public int level = 1;
-    public int health = 50;
-    public int maxHealth = 50;
+    public int health = 25;
+    public int maxHealth = 25;
     private bool hasKey = false;
 
     public GameObject QPanel;
@@ -68,10 +70,11 @@ public class QuestionGenerator : MonoBehaviour
         Debug.Log("Loaded API Key: " + apiKey);
         points = 0;
         level = 1;
-        health = 50;
-        maxHealth = 50;
+        health = 25;
+        maxHealth = 25;
         SetKeyFaded(!hasKey);
         UpdateFuelBars(0);
+        UpdateHealthBarFill(health);
         UpdateMainScreenOverlay();
     }
     public void GenerateQuestion()
@@ -260,6 +263,7 @@ public class QuestionGenerator : MonoBehaviour
             else if (chosenAns != correctAns)
             {
                 health--;
+                UpdateHealthBarFill(health);
             }
             //this now stores the relevant data of our questions inside of a list
             questionHistory.Add(new QuestionData(questionText.text, chosenAns, correctAns, correct));
@@ -312,7 +316,7 @@ public class QuestionGenerator : MonoBehaviour
     {
         levelText.text = $"Level: {level}";
         pointsText.text = $"Points: {points}";
-        healthBar.text = $"Health: {health}";
+        healthBar.text = $"{health}";
     }
 
     public List<QuestionData> GetQuestionHistoryValues()
@@ -357,6 +361,32 @@ public class QuestionGenerator : MonoBehaviour
             {
                 fuelBars[i].enabled = true; 
             }
+    }
+
+    //health bar fill
+    public void UpdateHealthBarFill(int healthVal)
+    {
+        if (healthBarFill != null && maxHealth > 0)
+        {
+            float currentFill = (float)healthVal / maxHealth; 
+
+            if (prevFill >= 0f)
+            {
+                if (currentFill > prevFill)
+                {
+                    // Health increased: fill from left
+                    healthBarFill.fillOrigin = (int)Image.OriginHorizontal.Right;
+                }
+                else if (currentFill < prevFill)
+                {
+                    // Health decreased: fill from right
+                    healthBarFill.fillOrigin = (int)Image.OriginHorizontal.Left;
+                }
+            }
+
+            healthBarFill.fillAmount = currentFill;
+            prevFill = currentFill;
+        }
     }
 
 
