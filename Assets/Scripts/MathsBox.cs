@@ -5,6 +5,7 @@ public class MathChest : MonoBehaviour
 {
     public GameObject QuestionGeneratorObj;  // Reference to the GameObject containing QuestionGenerator
     public CanvasScript canvasScript;
+    //public MathsBoxManager mathsBoxManager;
     //public RandomSpawns spawns;
     //private MovingFloatingPlatform currPlatform;
 
@@ -19,6 +20,7 @@ public class MathChest : MonoBehaviour
             //canvasScript.QPanelOpen();
             canvasScript.QPanelOpen();
             FindObjectOfType<QuestionGenerator>().GenerateQuestion();
+
             //spawns.StartQuestion();
             //FindObjectOfType<RandomSpawns>().DespawnChest();
 
@@ -27,8 +29,17 @@ public class MathChest : MonoBehaviour
         {
             transform.SetParent(other.transform);
         }
-        
+
     }
+
+    //private void OnTriggerExit2D(Collider2D other)
+    //{
+    //    if (other.CompareTag("FloatingPlatform"))
+    //    {
+    //        transform.SetParent(null);
+    //    }
+    //}
+
     //private void OnCollisionEnter2D(Collision2D collision)
     //{
     //    if (collision.gameObject.CompareTag("FloatingPlatform"))

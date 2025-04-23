@@ -63,6 +63,7 @@ public class QuestionGenerator : MonoBehaviour
 
     //mathsbox
     //public RandomSpawns spawns;
+    //public MathsBoxManager mathsBoxManager;
 
     private string apiKey = EnvLoaderAPIKey.GetEnv("API_KEY");
     private string correctAns = "";
@@ -70,6 +71,8 @@ public class QuestionGenerator : MonoBehaviour
 
     public void Start()
     {
+        //mathsBoxManager.ActivateRandomBox();
+
         Debug.Log("Loaded API Key: " + apiKey);
         points = 0;
         level = 1;
@@ -245,6 +248,7 @@ public class QuestionGenerator : MonoBehaviour
         UpdateMainScreenOverlay();
         yield return new WaitForSeconds(1f);
         StartCoroutine(QPanelClose());
+        //mathsBoxManager.SwapToNewBox();
         //spawns.RespawnChest();
 
 
@@ -293,7 +297,9 @@ public class QuestionGenerator : MonoBehaviour
         level = Mathf.Max(level, previousLevel);
 
         UpdateMainScreenOverlay();
-        StartCoroutine(QPanelClose());  
+        StartCoroutine(QPanelClose());
+        //mathsBoxManager.OnQuestionResolved();
+
     }
 
     public void OnButtonPressed(int i)

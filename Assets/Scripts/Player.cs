@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 
     private float horizontalInput;
     private float moveSpeed = 5f;
-    private float jumpForce = 5f;
+    private float jumpForce = 4f;
     public int maxJumps = 2;
     private int jumpCount = 0;
 
@@ -97,7 +97,7 @@ public class Player : MonoBehaviour
         animator.SetFloat("yVelocity", body.velocity.y);
     }
 
-    private void Flip()
+    public void Flip()
     {
         if ((facingRight && horizontalInput < 0f) || (!facingRight && horizontalInput > 0f))
         {
@@ -207,38 +207,82 @@ public class Player : MonoBehaviour
         }
     }
 
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("FloatingPlatform"))
+    //    {
+    //        transform.SetParent(collision.transform);
+    //        //MovingFloatingPlatform platform = collision.gameObject.GetComponent<MovingFloatingPlatform>();
+    //        //if (platform != null)
+    //        //{
+    //        //    currPlatform = platform;
+    //        isGrounded = true;
+    //        jumpCount = 0;
+    //        animator.SetBool("isGrounded", true);
+    //        animator.SetBool("isFalling", false);
+    //        animator.SetBool("isJumping", false);
+    //        animator.SetBool("isWallSliding", false); 
+
+
+    //        //}
+
+    //    }
+
+
+    //    if (collision.gameObject.CompareTag("Ground"))
+    //    {
+    //        isGrounded = true;
+    //        jumpCount = 0;
+    //        animator.SetBool("isGrounded", true);
+    //        animator.SetBool("isFalling", false);
+    //        animator.SetBool("isJumping", false);
+    //        animator.SetBool("isWallSliding", false);
+    //    }
+
+    //}
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        //if (collision.gameObject.CompareTag("FloatingPlatform"))
+        //{
+        //    // Make sure the player is parented to the platform only if it is active
+        //    //if (collision.gameObject.activeInHierarchy)
+        //    //{
+        //    //transform.SetParent(collision.transform);
+        //    currPlatform = collision.gameObject.GetComponent<MovingFloatingPlatform>();
+        //    isGrounded = true;
+        //    jumpCount = 0;
+        //    animator.SetBool("isGrounded", true);
+        //    animator.SetBool("isFalling", false);
+        //    animator.SetBool("isJumping", false);
+        //    animator.SetBool("isWallSliding", false);
+        //    //}
+        //}
         if (collision.gameObject.CompareTag("FloatingPlatform"))
         {
-            transform.SetParent(collision.transform);
-            //MovingFloatingPlatform platform = collision.gameObject.GetComponent<MovingFloatingPlatform>();
-            //if (platform != null)
-            //{
-            //    currPlatform = platform;
-            isGrounded = true;
-            jumpCount = 0;
-            animator.SetBool("isGrounded", true);
-            animator.SetBool("isFalling", false);
-            animator.SetBool("isJumping", false);
-            animator.SetBool("isWallSliding", false); 
+            MovingFloatingPlatform platform = collision.gameObject.GetComponent<MovingFloatingPlatform>();
+            if (platform != null)
+            {
+                currPlatform = platform;
+                isGrounded = true;
+                jumpCount = 0;
+                animator.SetBool("isGrounded", true);
+                animator.SetBool("isFalling", false);
+                animator.SetBool("isJumping", false);
+                animator.SetBool("isWallSliding", false);
 
 
-            //}
+            }
 
+            if (collision.gameObject.CompareTag("Ground"))
+            {
+                isGrounded = true;
+                jumpCount = 0;
+                animator.SetBool("isGrounded", true);
+                animator.SetBool("isFalling", false);
+                animator.SetBool("isJumping", false);
+                animator.SetBool("isWallSliding", false);
+            }
         }
-
-
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
-            jumpCount = 0;
-            animator.SetBool("isGrounded", true);
-            animator.SetBool("isFalling", false);
-            animator.SetBool("isJumping", false);
-            animator.SetBool("isWallSliding", false);
-        }
-
     }
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -249,6 +293,32 @@ public class Player : MonoBehaviour
         }
     }
 
+    //private void OnCollisionExit2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Wall"))
+    //    {
+    //        isTouchingWall = false;
+    //        animator.SetBool("isWallSliding", false);
+    //        animator.SetBool("isFalling", true);
+    //    }
+
+
+    //    if (collision.gameObject.CompareTag("FloatingPlatform"))
+    //    {
+    //        transform.SetParent(null);
+
+    //        currPlatform = null;
+            
+    //    }
+    //    if (collision.gameObject.CompareTag("Ground"))
+    //    {
+    //        isGrounded = false;
+    //        animator.SetBool("isGrounded", false);
+
+
+    //    }
+
+    //}
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Wall"))
@@ -257,26 +327,27 @@ public class Player : MonoBehaviour
             animator.SetBool("isWallSliding", false);
             animator.SetBool("isFalling", true);
         }
-
-
         if (collision.gameObject.CompareTag("FloatingPlatform"))
         {
+            // Make sure to unparent the player from the platform only if the platform is active
+            //if (collision.gameObject.activeInHierarchy)
+            //{
+                //transform.SetParent(null);
             currPlatform = null;
-            
+            //}
+            //}
         }
+
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = false;
             animator.SetBool("isGrounded", false);
-
-
         }
-
     }
-   
 
 
-  
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //this is if player comes in contact with the ground, jumping/falling
@@ -312,16 +383,7 @@ public class Player : MonoBehaviour
     public void DisableMovement()
     {
         canMove = false;
-        //if (body != null)
-        //{
-        //    body.velocity = body.velocity * 0.3f; 
-        //    body.angularVelocity = 0f;
-        //}
-        //if (animator != null)
-        //{
-        //    animator.SetFloat("xVelocity", 0f);
-        //    animator.SetFloat("yVelocity", 0f);
-        //}
+       
     }
 
 
