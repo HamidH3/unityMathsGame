@@ -7,8 +7,8 @@ public class Player : MonoBehaviour
     //public GameObject QPanel;
 
     private float horizontalInput;
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float jumpForce = 5f;
+    private float moveSpeed = 5f;
+    private float jumpForce = 5f;
     public int maxJumps = 2;
     private int jumpCount = 0;
 
@@ -211,19 +211,20 @@ public class Player : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("FloatingPlatform"))
         {
-            MovingFloatingPlatform platform = collision.gameObject.GetComponent<MovingFloatingPlatform>();
-            if (platform != null)
-            {
-                currPlatform = platform;
-                isGrounded = true;
-                jumpCount = 0;
-                animator.SetBool("isGrounded", true);
-                animator.SetBool("isFalling", false);
-                animator.SetBool("isJumping", false);
-                animator.SetBool("isWallSliding", false); 
+            transform.SetParent(collision.transform);
+            //MovingFloatingPlatform platform = collision.gameObject.GetComponent<MovingFloatingPlatform>();
+            //if (platform != null)
+            //{
+            //    currPlatform = platform;
+            isGrounded = true;
+            jumpCount = 0;
+            animator.SetBool("isGrounded", true);
+            animator.SetBool("isFalling", false);
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isWallSliding", false); 
 
 
-            }
+            //}
 
         }
 
@@ -311,6 +312,16 @@ public class Player : MonoBehaviour
     public void DisableMovement()
     {
         canMove = false;
+        //if (body != null)
+        //{
+        //    body.velocity = body.velocity * 0.3f; 
+        //    body.angularVelocity = 0f;
+        //}
+        //if (animator != null)
+        //{
+        //    animator.SetFloat("xVelocity", 0f);
+        //    animator.SetFloat("yVelocity", 0f);
+        //}
     }
 
 

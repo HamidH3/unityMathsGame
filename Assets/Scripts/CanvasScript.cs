@@ -136,6 +136,7 @@ public class CanvasScript : MonoBehaviour
     {
         QPanel.SetActive(true);
         player.DisableMovement();
+        
 
         //// Set animator to Idle state
         player.animator.SetFloat("xVelocity", 0f);
