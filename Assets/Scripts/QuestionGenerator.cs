@@ -61,6 +61,9 @@ public class QuestionGenerator : MonoBehaviour
     public GameObject QPanel;
     public Player player;
 
+    //mathsbox
+    //public RandomSpawns spawns;
+
     private string apiKey = EnvLoaderAPIKey.GetEnv("API_KEY");
     private string correctAns = "";
     //private string apiKey = ""; // <-- replace this with your OpenAI key
@@ -82,6 +85,7 @@ public class QuestionGenerator : MonoBehaviour
         //Debug.Log("Generating question...");
         if (!isGenerating)
         {
+            //spawns.PauseSpawning();
             StartCoroutine(CallGPTForQuestion());
 
         }
@@ -241,6 +245,9 @@ public class QuestionGenerator : MonoBehaviour
         UpdateMainScreenOverlay();
         yield return new WaitForSeconds(1f);
         StartCoroutine(QPanelClose());
+        //spawns.RespawnChest();
+
+
     }
 
     public void CheckAns(string chosenAns)
@@ -268,8 +275,8 @@ public class QuestionGenerator : MonoBehaviour
             //this now stores the relevant data of our questions inside of a list
             questionHistory.Add(new QuestionData(questionText.text, chosenAns, correctAns, correct));
         }
-           
 
+        int previousLevel = level;
         if (points >= 0 && points <=3 )
         {
             level = 1;
@@ -283,6 +290,7 @@ public class QuestionGenerator : MonoBehaviour
             level = 3;
             GameObject.Find("CaveDoor").GetComponent<CaveDoor>().OpenCave();
         }
+        level = Mathf.Max(level, previousLevel);
 
         UpdateMainScreenOverlay();
         StartCoroutine(QPanelClose());  
@@ -292,6 +300,8 @@ public class QuestionGenerator : MonoBehaviour
     {
         Debug.Log(ansButtons[i]);
         CheckAns(ansButtons[i].text);
+        //spawns.EndQAndRespawn();
+        //spawns.ResumeSpawning();
     }
 
     IEnumerator QPanelClose()

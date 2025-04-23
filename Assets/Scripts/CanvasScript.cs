@@ -58,6 +58,7 @@ public class CanvasScript : MonoBehaviour
     //Main Menu
     public void StartGame()
     {
+        //here reset the game, so player location, and narrator speech
         MainMenu.SetActive(false);
         Time.timeScale = 1f;
         if (player != null)

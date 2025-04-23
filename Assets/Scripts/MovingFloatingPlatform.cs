@@ -103,8 +103,10 @@ public class MovingFloatingPlatform : MonoBehaviour
     public enum MovementType { horizontal, vertical }
     public MovementType movementType;
 
-    [SerializeField] private float moveSpeed = 2f;
-    [SerializeField] private float moveDistance = 3f;
+    private float moveSpeed = 1f;
+    private float moveDistance = 2f;
+    [SerializeField] private float timeOffset = 0f;
+
     public float moveDirection = 1f;
 
     private Vector3 startPos;
@@ -157,28 +159,39 @@ public class MovingFloatingPlatform : MonoBehaviour
         lastPos = transform.position;
     }
 
+    //private void MoveHorizontally()
+    //{
+    //    float step = moveSpeed * Time.deltaTime;
+
+    //    // Reverse direction when the platform reaches the target
+    //    if (transform.position.x >= endPos.x || transform.position.x <= startPos.x)
+    //    {
+    //        moveDirection = -moveDirection;  // Reverse direction
+    //    }
+    //    transform.position += new Vector3(moveDirection * step, 0f, 0f);
+    //}
+
+    //private void MoveVertically()
+    //{
+    //    float step = moveSpeed * Time.deltaTime;
+
+    //    // Reverse direction when the platform reaches the target
+    //    if (transform.position.y >= endPos.y || transform.position.y <= startPos.y)
+    //    {
+    //        moveDirection = -moveDirection;  // Reverse direction
+    //    }
+    //    transform.position += new Vector3(0f, moveDirection * step, 0f);
+    //}
     private void MoveHorizontally()
     {
-        float step = moveSpeed * Time.deltaTime;
-
-        // Reverse direction when the platform reaches the target
-        if (transform.position.x >= endPos.x || transform.position.x <= startPos.x)
-        {
-            moveDirection = -moveDirection;  // Reverse direction
-        }
-        transform.position += new Vector3(moveDirection * step, 0f, 0f);
+        float offset = Mathf.Sin((Time.time + timeOffset) * moveSpeed) * moveDistance;
+        transform.position = new Vector3(startPos.x + offset, startPos.y, startPos.z);
     }
 
     private void MoveVertically()
     {
-        float step = moveSpeed * Time.deltaTime;
-
-        // Reverse direction when the platform reaches the target
-        if (transform.position.y >= endPos.y || transform.position.y <= startPos.y)
-        {
-            moveDirection = -moveDirection;  // Reverse direction
-        }
-        transform.position += new Vector3(0f, moveDirection * step, 0f);
+        float offset = Mathf.Sin((Time.time + timeOffset) * moveSpeed) * moveDistance;
+        transform.position = new Vector3(startPos.x, startPos.y + offset, startPos.z);
     }
 
     private void SetTargetPos()
