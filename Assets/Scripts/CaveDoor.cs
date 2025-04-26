@@ -5,10 +5,11 @@ using UnityEngine;
 public class CaveDoor : MonoBehaviour
 {
     public float openSpeed = 2f;
-    public Vector3 openToTheRight = new Vector3(3f, 0f, 0f); // Move right
+    public Vector3 openToTheRight = new Vector3(3f, 0f, 0f); 
     private Vector3 closedPosition;
     private Vector3 openPosition;
     private bool isOpening = false;
+    public AudioSource groundOpening;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,11 +23,16 @@ public class CaveDoor : MonoBehaviour
         if (isOpening)
         {
             transform.position = Vector3.MoveTowards(transform.position, openPosition, openSpeed * Time.deltaTime);
+
         }
     }
 
     public void OpenCave()
     {
         isOpening = true;
+        if (groundOpening != null && !groundOpening.isPlaying)
+        {
+            groundOpening.Play();
+        }
     }
 }

@@ -27,9 +27,9 @@ public class CanvasScript : MonoBehaviour
    
     private void Start()
     {
-        //MainMenu.SetActive(true);
-        //animator = GetComponent<Animator>();
-        //animator.Play("mainmenubckground");
+        MainMenu.SetActive(true);
+        animator = GetComponent<Animator>();
+        animator.Play("mainmenubckground");
         if (MainMenu != null)
             MainMenu.SetActive(true);
 
