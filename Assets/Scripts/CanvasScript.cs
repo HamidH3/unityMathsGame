@@ -13,9 +13,9 @@ public class CanvasScript : MonoBehaviour
     public GameObject BillBoardCloseup;
     public GameObject ShopPanel;
     public GameObject EndMenu;
-    //mainmenu buttons
-    public GameObject SettingsPanel;
-    public GameObject MainMenuButtons;
+    ////mainmenu buttons
+    //public GameObject SettingsPanel;
+    //public GameObject MainMenuButtons;
     public Animator animator;
 
 
@@ -27,9 +27,24 @@ public class CanvasScript : MonoBehaviour
    
     private void Start()
     {
-        MainMenu.SetActive(true);
-        animator = GetComponent<Animator>();
-        animator.Play("mainmenubckground");
+        //MainMenu.SetActive(true);
+        //animator = GetComponent<Animator>();
+        //animator.Play("mainmenubckground");
+        if (MainMenu != null)
+            MainMenu.SetActive(true);
+
+        if (animator == null)
+            animator = GetComponent<Animator>();
+
+        if (animator != null)
+        {
+            // Check if animator has "mainmenubckground" state
+            animator.Play("mainmenubckground");
+        }
+        else
+        {
+            Debug.LogWarning("Animator component missing from Canvas!");
+        }
         EndMenu.SetActive(false);
         QPanel.SetActive(false);
         player.DisableMovement();
@@ -78,17 +93,17 @@ public class CanvasScript : MonoBehaviour
         }
     }
 
-    public void ClickSettingsMainMenu()
-    {
-        if (MainMenuButtons != null)
-        {
-            MainMenuButtons.SetActive(false);
-        }
-        if (SettingsPanel != null)
-        {
-            SettingsPanel.SetActive(true);
-        }
-    }
+    //public void ClickSettingsMainMenu()
+    //{
+    //    if (MainMenuButtons != null)
+    //    {
+    //        MainMenuButtons.SetActive(false);
+    //    }
+    //    if (SettingsPanel != null)
+    //    {
+    //        SettingsPanel.SetActive(true);
+    //    }
+    //}
 
 
     //Pause Menu
