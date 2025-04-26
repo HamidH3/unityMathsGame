@@ -13,6 +13,10 @@ public class CanvasScript : MonoBehaviour
     public GameObject BillBoardCloseup;
     public GameObject ShopPanel;
     public GameObject EndMenu;
+    //mainmenu buttons
+    public GameObject SettingsPanel;
+    public GameObject MainMenuButtons;
+    public Animator animator;
 
 
     private bool isPaused = false;
@@ -24,6 +28,8 @@ public class CanvasScript : MonoBehaviour
     private void Start()
     {
         MainMenu.SetActive(true);
+        animator = GetComponent<Animator>();
+        animator.Play("mainmenubckground");
         EndMenu.SetActive(false);
         QPanel.SetActive(false);
         player.DisableMovement();
@@ -69,6 +75,18 @@ public class CanvasScript : MonoBehaviour
         if (questionGenerator != null)
         {
             questionGenerator.UpdateMainScreenOverlay(); // Call the UpdateMainScreenOverlay method
+        }
+    }
+
+    public void ClickSettingsMainMenu()
+    {
+        if (MainMenuButtons != null)
+        {
+            MainMenuButtons.SetActive(false);
+        }
+        if (SettingsPanel != null)
+        {
+            SettingsPanel.SetActive(true);
         }
     }
 

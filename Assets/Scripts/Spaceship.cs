@@ -15,12 +15,16 @@ public class SpaceShip : MonoBehaviour
 
     private void Start()
     {
-        narrator = FindObjectOfType<Narrator>();
+        //narrator = FindObjectOfType<Narrator>();
          
 
     }
     private void OnMouseDown()
     {
+        if (narrator != null && !narrator.gameObject.activeSelf)
+        {
+            narrator.gameObject.SetActive(true); 
+        }
         Debug.Log((shopController.HasEnoughFuel));
         if (shopController.HasEnoughFuel == true)
         {
@@ -30,7 +34,7 @@ public class SpaceShip : MonoBehaviour
         }
         else
         {
-            narrator.ShowMessage("You need enough fuel");
+            narrator.ShowMessage("You need more fuel...");
             
         }
         StartCoroutine(DisableMessage());
