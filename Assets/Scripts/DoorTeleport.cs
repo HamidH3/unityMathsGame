@@ -26,6 +26,7 @@ public class DoorTeleport : MonoBehaviour
                     player.Flip();
                 }
             }
+            
 
         }
     }

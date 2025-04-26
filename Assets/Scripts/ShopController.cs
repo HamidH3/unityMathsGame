@@ -44,7 +44,7 @@ public class ShopController : MonoBehaviour
     }
     public void SelectFuel() {
         selectedItem = ShopItem.Fuel;
-        narrator.ShowMessage("Selected: +1 bar of Fuel for 5 points. Choose how much you want!");
+        narrator.ShowMessage("Selected: +1 bar of Fuel for 5 points. Click 'Buy' to confirm!");
     }
 
     public void BuyToConfirm()
