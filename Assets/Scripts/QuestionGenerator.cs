@@ -65,6 +65,9 @@ public class QuestionGenerator : MonoBehaviour
     //public RandomSpawns spawns;
     //public MathsBoxManager mathsBoxManager;
 
+    //soundEffects
+
+
     private string apiKey = EnvLoaderAPIKey.GetEnv("API_KEY");
     private string correctAns = "";
     //private string apiKey = ""; // <-- replace this with your OpenAI key
@@ -72,6 +75,7 @@ public class QuestionGenerator : MonoBehaviour
     public void Start()
     {
         //mathsBoxManager.ActivateRandomBox();
+        
 
         Debug.Log("Loaded API Key: " + apiKey);
         points = 0;
@@ -82,6 +86,8 @@ public class QuestionGenerator : MonoBehaviour
         UpdateFuelBars(0);
         UpdateHealthBarFill(health);
         UpdateMainScreenOverlay();
+
+       
     }
     public void GenerateQuestion()
     {

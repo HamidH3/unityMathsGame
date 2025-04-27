@@ -6,8 +6,9 @@ using UnityEngine.UI;
 public class Settings : MonoBehaviour
 {
     public GameObject basicSettings; 
-    public GameObject basicButton;   
-    public GameObject MainMenuButtons;
+    public GameObject basicButton;
+    //public GameObject MainMenuButtons;
+    public List<GameObject> MainMenuButtons;
     public Slider volumeSlider;
 
     public AudioSource backgroundMusicSource;
@@ -47,15 +48,23 @@ public class Settings : MonoBehaviour
 
             // After movement, show settings panel
             basicSettings.SetActive(true);
-            MainMenuButtons.SetActive(false);
+            //MainMenuButtons.SetActive(false);
+            foreach (GameObject button in MainMenuButtons)
+            {
+                button.SetActive(false);
+            }
         }
         else
         {
             // Hide settings panel first
             basicSettings.SetActive(false);
-            MainMenuButtons.SetActive(true);
+            //MainMenuButtons.SetActive(true);
+            foreach (GameObject button in MainMenuButtons)
+            {
+                button.SetActive(true);
+            }
 
-            
+
         }
     }
     private void OnVolumeChanged(float masterVolume)

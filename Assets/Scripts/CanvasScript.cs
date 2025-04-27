@@ -47,6 +47,7 @@ public class CanvasScript : MonoBehaviour
         }
         EndMenu.SetActive(false);
         QPanel.SetActive(false);
+        PauseMenu.SetActive(false);
         player.DisableMovement();
         Time.timeScale = 0f;
         if (questionGenerator != null)
@@ -89,21 +90,10 @@ public class CanvasScript : MonoBehaviour
         MainScreenOverlay.SetActive(true);
         if (questionGenerator != null)
         {
-            questionGenerator.UpdateMainScreenOverlay(); // Call the UpdateMainScreenOverlay method
+            questionGenerator.UpdateMainScreenOverlay(); 
         }
     }
 
-    //public void ClickSettingsMainMenu()
-    //{
-    //    if (MainMenuButtons != null)
-    //    {
-    //        MainMenuButtons.SetActive(false);
-    //    }
-    //    if (SettingsPanel != null)
-    //    {
-    //        SettingsPanel.SetActive(true);
-    //    }
-    //}
 
 
     //Pause Menu
@@ -122,7 +112,15 @@ public class CanvasScript : MonoBehaviour
             historyText += $"Q: {data.question}\n";
             historyText += $"Your Answer: {data.playerAns}\n";
             historyText += $"Correct Answer: {data.correctAnswer}\n";
-            historyText += $"Correct: {data.isCorrect}\n\n";
+            //historyText += $"Correct: {data.isCorrect}\n\n";
+            if (data.isCorrect)
+            {
+                historyText += $"Correct\n\n";
+            }
+            else
+            {
+                historyText += $"Incorrect\n\n";
+            }
         }
 
         questionHistoryText.text = historyText;
