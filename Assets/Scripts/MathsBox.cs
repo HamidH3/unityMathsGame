@@ -32,54 +32,7 @@ public class MathChest : MonoBehaviour
 
     }
 
-    //private void OnTriggerExit2D(Collider2D other)
-    //{
-    //    if (other.CompareTag("FloatingPlatform"))
-    //    {
-    //        transform.SetParent(null);
-    //    }
-    //}
-
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("FloatingPlatform"))
-    //    {
-    //        MovingFloatingPlatform platform = collision.gameObject.GetComponent<MovingFloatingPlatform>();
-    //        if (platform != null)
-    //        {
-    //            currPlatform = platform;
-
-
-
-
-    //        }
-
-    //    }
-    //}
-        //private void OnCollisionExit2D(Collision2D collision)
-        //{
-          
-
-
-        //    if (collision.gameObject.CompareTag("FloatingPlatform"))
-        //    {
-        //        currPlatform = null;
-
-        //    }
-     
-
-        //}
-        //private void OnTriggerExit2D()
-        //{
-        //    QStarted = false;
-        //    spawns.EndQAndRespawn();
-
-        //}
-        //private void Update()
-        //{
-        //    FindObjectOfType<RandomSpawns>().SpawnAtRandomLocation();
-
-        //}
-    }
+    
+   }
 
 

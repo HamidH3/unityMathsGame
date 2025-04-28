@@ -13,6 +13,8 @@ public class SpaceShip : MonoBehaviour
 
     private Renderer keyRenderer;
 
+    public bool canClick = true;
+
     private void Start()
     {
         //narrator = FindObjectOfType<Narrator>();
@@ -21,6 +23,9 @@ public class SpaceShip : MonoBehaviour
     }
     private void OnMouseDown()
     {
+        //this is determined from other panel scripts when theyre open to stop you from clicking the spaceship from the background
+        if (!canClick) return;
+
         if (narrator != null && !narrator.gameObject.activeSelf)
         {
             narrator.gameObject.SetActive(true); 

@@ -4,6 +4,8 @@ using System.Collections;
 
 public class Instructions : MonoBehaviour
 {
+    public bool canClick = true;
+    public SpaceShip spaceShip;
     [Header("Panel to Show When Clicked")]
     public GameObject OpenPanel;
 
@@ -12,9 +14,13 @@ public class Instructions : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (!canClick) return;
+
         if (OpenPanel != null)
         {
             OpenPanel.SetActive(true);
+            spaceShip.canClick = false;
+
         }
 
         if (player != null)

@@ -13,6 +13,7 @@ public class OpenShop : MonoBehaviour
 
     public QuestionGenerator questionGenerator;
     public Narrator narrator;
+    public SpaceShip spaceship;
 
     private void Start()
     {
@@ -28,6 +29,8 @@ public class OpenShop : MonoBehaviour
             if (OpenPanel != null)
             {
                 OpenPanel.SetActive(true);
+                spaceship.canClick = false;
+
             }
 
             if (player != null)

@@ -9,6 +9,7 @@ public class CaveDoor : MonoBehaviour
     private Vector3 closedPosition;
     private Vector3 openPosition;
     private bool isOpening = false;
+    private bool hasPlayed = false;
     public AudioSource groundOpening;
     // Start is called before the first frame update
     void Start()
@@ -30,9 +31,13 @@ public class CaveDoor : MonoBehaviour
     public void OpenCave()
     {
         isOpening = true;
-        if (groundOpening != null && !groundOpening.isPlaying)
+        if (!hasPlayed)  
         {
-            groundOpening.Play();
+            hasPlayed = true; 
+            if (groundOpening != null && !groundOpening.isPlaying)
+            {
+                groundOpening.Play();  
+            }
         }
     }
 }

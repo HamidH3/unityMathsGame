@@ -23,8 +23,11 @@ public class CanvasScript : MonoBehaviour
     public TMP_Text questionHistoryText;
     public QuestionGenerator questionGenerator;
     public Player player;
+    public SpaceShip spaceShip;
+    public ControlsPauseMenu controlsPauseMenu;
+    public Instructions billboard;
     // Start is called before the first frame update
-   
+
     private void Start()
     {
         MainMenu.SetActive(true);
@@ -137,18 +140,30 @@ public class CanvasScript : MonoBehaviour
 
     public void OpenPauseMenu()
     {
+
         isPaused = true;
         OnPauseMenuOpen();
         PauseMenu.SetActive(true);
         Time.timeScale = 0f;
         player.DisableMovement();
+        spaceShip.canClick = false;
+        billboard.canClick = false;
+
     }
 
     public void ClosePauseMenu()
     {
         isPaused = false;
+        if (controlsPauseMenu != null)
+        {
+            controlsPauseMenu.ResetPanelOnClose();
+        }
         PauseMenu.SetActive(false);
         Time.timeScale = 1f;
+
+        spaceShip.canClick = true;
+        billboard.canClick = true;
+
 
         //this is to ensure players cant move if QPanel is open, as i was facing this issue before.
         if (!QPanel.activeSelf)
@@ -156,7 +171,7 @@ public class CanvasScript : MonoBehaviour
             player.EnableMovement();
 
         }
-        
+
     }
 
    
@@ -167,6 +182,10 @@ public class CanvasScript : MonoBehaviour
         if (QPanel != null)
         {
             QPanel.SetActive(false);
+            spaceShip.canClick = true;
+            billboard.canClick = true;
+
+
             Time.timeScale = 1f;
             player.EnableMovement();
         }
@@ -176,7 +195,10 @@ public class CanvasScript : MonoBehaviour
     {
         QPanel.SetActive(true);
         player.DisableMovement();
-        
+        spaceShip.canClick = false;
+        billboard.canClick = false;
+
+
 
         //// Set animator to Idle state
         player.animator.SetFloat("xVelocity", 0f);
@@ -204,6 +226,10 @@ public class CanvasScript : MonoBehaviour
         if (BillBoardCloseup != null)
         {
             BillBoardCloseup.SetActive(false);
+            spaceShip.canClick = true;
+            billboard.canClick = true;
+
+
             Time.timeScale = 1f;
             player.EnableMovement();
         }
@@ -218,6 +244,8 @@ public class CanvasScript : MonoBehaviour
         if (ShopPanel != null)
         {
             ShopPanel.SetActive(false);
+            spaceShip.canClick = true;
+
             Time.timeScale = 1f;
             player.EnableMovement();
         }
