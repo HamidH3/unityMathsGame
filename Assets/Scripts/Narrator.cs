@@ -28,9 +28,11 @@ public class Narrator : MonoBehaviour
             yield return new WaitForSeconds(0.04f);
         }
         messageCoroutine = null;
-        //yield return new WaitForSeconds(3f);
 
+    }
 
-        //messageText.text = "";
+    public void HideMessage()
+    {
+        messageCoroutine = null;
     }
 }

@@ -60,6 +60,8 @@ public class QuestionGenerator : MonoBehaviour
 
     public GameObject QPanel;
     public Player player;
+    public Instructions billboard;
+    public SpaceShip spaceShip;
 
     //mathsbox
     //public RandomSpawns spawns;
@@ -287,24 +289,24 @@ public class QuestionGenerator : MonoBehaviour
         }
 
         int previousLevel = level;
-        if (points >= 0 && points <=3 )
+        if (points >= 0 && points <=4 )
         {
             level = 1;
         }
-        else if (points >= 3 && points <=6)
+        else if (points >= 5 && points <=9)
         {
             level = 2;
         }
-        else if (points >= 6 && points <=9)
+        else if (points >= 10)
         {
             level = 3;
             GameObject.Find("CaveDoor").GetComponent<CaveDoor>().OpenCave();
         }
+        //this ensures that even if you loose points, the levels dont change
         level = Mathf.Max(level, previousLevel);
 
         UpdateMainScreenOverlay();
         StartCoroutine(QPanelClose());
-        //mathsBoxManager.OnQuestionResolved();
 
     }
 
@@ -319,6 +321,8 @@ public class QuestionGenerator : MonoBehaviour
     IEnumerator QPanelClose()
     {
         QPanel.SetActive(false);
+        spaceShip.canClick = true;
+        billboard.canClick = true;
         //this ensures that even if you close the QPanel manually,
         //the timer is set to null so a health doesnt decremenet even if you didnt answer
         if (timerCoroutine != null)

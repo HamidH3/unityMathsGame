@@ -126,7 +126,7 @@ public class SettingsButtonController : MonoBehaviour
         {
             // Open the guide panel
             guidePanel.SetActive(true);
-            narrator.ShowMessage("Welcome, Explorer!\r\n\r\nAnswer maths questions to earn points!\r\nRight answers give you points.\r\nWrong answers lose you health!\r\n\r\nReach Level 3 to find a hidden key in a secret cave.\r\nUse the key to unlock the Shop, where you can spend points on Health Bars or Fuel Bars.\r\n\r\nYou need 3 Fuel Bars to escape the planet.\r\nNo fuel means you’re stuck forever! No health means you perish...\r\n\r\nSolve questions, stay healthy, find the key, buy fuel — and escape!\r\n\r\nGood luck!");
+            narrator.ShowMessage("Welcome, Explorer!\r\n\r\nAnswer maths questions to earn points!\r\nRight answers give you points.\r\nWrong answers lose you health!\r\n\r\nReach Level 3 to find a hidden key in a secret cave.\r\nUse the key to unlock the Shop, where you can spend points on Health Bars or Fuel Bars.\r\n\r\nYou need 3 Fuel Bars to escape the planet.\r\nNo fuel means you’re stuck forever! No health means you perish...\r\n\r\nSolve questions, stay healthy, find the key, buy fuel - and escape!\r\n\r\nGood luck!");
             currentState = MenuState.Guide;
         }
 

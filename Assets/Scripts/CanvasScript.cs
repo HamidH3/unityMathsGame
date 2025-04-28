@@ -211,11 +211,15 @@ public class CanvasScript : MonoBehaviour
     {
         EndMenu.SetActive(true);
         player.DisableMovement();
+        spaceShip.canClick = false;
+        billboard.canClick = false;
     }
     public void PlayAgainButton()
     {
         EndMenu.SetActive(false);
         MainMenu.SetActive(true);
+        spaceShip.canClick = true;
+        billboard.canClick = true;
     }
 
 
