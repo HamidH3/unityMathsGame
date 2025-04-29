@@ -179,16 +179,7 @@ public class CanvasScript : MonoBehaviour
     //Question Panel
     public void QPanelClose()
     {
-        if (QPanel != null)
-        {
-            QPanel.SetActive(false);
-            spaceShip.canClick = true;
-            billboard.canClick = true;
-
-
-            Time.timeScale = 1f;
-            player.EnableMovement();
-        }
+       questionGenerator.OnCloseButtonPressed();
 
     }
     public void QPanelOpen()

@@ -11,7 +11,11 @@ public class ControlsPauseMenu : MonoBehaviour
     public List<GameObject> controlInstructions;
     //public Narrator narrator;
     public Slider volumeSlider;
+    public Slider soundEffectsSlider;
+
     public AudioSource backgroundMusicSource;
+    public List<AudioSource> soundEffects;
+
 
 
     private enum MenuState { None, Controls, Settings }
@@ -34,8 +38,22 @@ public class ControlsPauseMenu : MonoBehaviour
             volumeSlider.value = 1f;
             backgroundMusicSource.volume = 1f;
         }
+        if (PlayerPrefs.HasKey("SoundEffects"))
+        {
+            float savedSoundEffectsVol = PlayerPrefs.GetFloat("SoundEffects");
+            soundEffectsSlider.value = savedSoundEffectsVol;
+            SetSoundEffectVolume(savedSoundEffectsVol);
+        }
+        else
+        {
+            soundEffectsSlider.value = 1f;
+            SetSoundEffectVolume(1f);
+        }
+
 
         volumeSlider.onValueChanged.AddListener(OnVolumeChanged);
+        soundEffectsSlider.onValueChanged.AddListener(OnSoundEffectChanged);
+
     }
 
     public void ToggleControls()
@@ -86,31 +104,6 @@ public class ControlsPauseMenu : MonoBehaviour
         }
     }
 
-    //public void BackButton()
-    //{
-    //    // Handle the back button press logic
-    //    if (currentState == MenuState.Guide || currentState == MenuState.Settings)
-    //    {
-    //        // Close the current panel (either Guide or Settings)
-    //        if (currentState == MenuState.Guide)
-    //        {
-    //            guidePanel.SetActive(false);
-    //        }
-    //        else if (currentState == MenuState.Settings)
-    //        {
-    //            settingsPanel.SetActive(false);
-    //        }
-
-    //        // Show main menu buttons again
-    //        foreach (GameObject button in MainMenuButtons)
-    //        {
-    //            button.SetActive(true);
-    //        }
-
-    //        // Reset the state to None
-    //        currentState = MenuState.None;
-    //    }
-    //}
 
     public void ResetPanelOnClose()
     {
@@ -128,5 +121,21 @@ public class ControlsPauseMenu : MonoBehaviour
         backgroundMusicSource.volume = masterVolume; // Set global volume
         PlayerPrefs.SetFloat("MasterVolume", masterVolume); // Save it
         PlayerPrefs.Save();
+    }
+    private void OnSoundEffectChanged(float volume)
+    {
+        SetSoundEffectVolume(volume);
+        PlayerPrefs.SetFloat("SoundEffects", volume); // Save it
+        PlayerPrefs.Save();
+    }
+    private void SetSoundEffectVolume(float volume)
+    {
+        foreach (AudioSource vol in soundEffects)
+        {
+            if (vol != null)
+            {
+                vol.volume = volume;
+            }
+        }
     }
 }

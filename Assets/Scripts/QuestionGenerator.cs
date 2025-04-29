@@ -63,11 +63,14 @@ public class QuestionGenerator : MonoBehaviour
     public Instructions billboard;
     public SpaceShip spaceShip;
 
-    //mathsbox
-    //public RandomSpawns spawns;
-    //public MathsBoxManager mathsBoxManager;
 
     //soundEffects
+    public AudioSource correctSound;
+    public AudioSource incorrectSound;
+    public AudioSource timerTickSound;
+    public AudioSource buzzerSound;
+
+
 
 
     private string apiKey = EnvLoaderAPIKey.GetEnv("API_KEY");
@@ -239,21 +242,32 @@ public class QuestionGenerator : MonoBehaviour
                 //if panel was closed during timer, stop timer
             {
                 Debug.Log("StartTimer aborted: QPanel was closed.");
+                //timerTickSound.Stop();
                 yield break;
             }
             timerText.text = $"Time: {timeLeft}";
+            if (timerTickSound != null) timerTickSound.Play();
             yield return new WaitForSeconds(1f);
             timeLeft--;
 
             if (isAnswered)
             {
+                
                 yield break;
+
             }
         }
         timerText.text = "TIMES UP!";
+        if (timerTickSound.isPlaying)
+        {
+            timerTickSound.Stop();
+        }
+        if (buzzerSound != null) buzzerSound.Play();
+        yield return new WaitForSeconds(0.5f);
         health--;
         questionHistory.Add(new QuestionData(questionText.text, "None", correctAns, false));
         UpdateMainScreenOverlay();
+        UpdateHealthBarFill(health);
         yield return new WaitForSeconds(1f);
         StartCoroutine(QPanelClose());
         //mathsBoxManager.SwapToNewBox();
@@ -265,9 +279,11 @@ public class QuestionGenerator : MonoBehaviour
     public void CheckAns(string chosenAns)
     {
         isAnswered = true;
-        if (timerCoroutine != null)
+        if (timerCoroutine != null && timerTickSound != null)
         {
             StopCoroutine(timerCoroutine);
+            timerTickSound.Stop();
+
         }
 
         correct = false;
@@ -277,12 +293,14 @@ public class QuestionGenerator : MonoBehaviour
             {
                 correct = true;
                 points++;
+                if (correctSound != null) correctSound.Play();
 
             }
             else if (chosenAns != correctAns)
             {
                 health--;
                 UpdateHealthBarFill(health);
+                if (incorrectSound != null) incorrectSound.Play();
             }
             //this now stores the relevant data of our questions inside of a list
             questionHistory.Add(new QuestionData(questionText.text, chosenAns, correctAns, correct));
@@ -317,22 +335,46 @@ public class QuestionGenerator : MonoBehaviour
         //spawns.EndQAndRespawn();
         //spawns.ResumeSpawning();
     }
-
-    IEnumerator QPanelClose()
+    public void OnCloseButtonPressed()
     {
-        QPanel.SetActive(false);
-        spaceShip.canClick = true;
-        billboard.canClick = true;
         //this ensures that even if you close the QPanel manually,
         //the timer is set to null so a health doesnt decremenet even if you didnt answer
         if (timerCoroutine != null)
         {
             StopCoroutine(timerCoroutine);
             timerCoroutine = null;
+
+        }
+        if (timerTickSound.isPlaying)
+        {
+            timerTickSound.Stop();
         }
         isAnswered = true;
         //reset timer text
         timerText.text = "";
+        StartCoroutine(QPanelClose());
+    }
+
+    IEnumerator QPanelClose()
+    {
+        QPanel.SetActive(false);
+        //if (timerTickSound.isPlaying)
+        //{
+        //    timerTickSound.Stop();
+        //}
+        spaceShip.canClick = true;
+        billboard.canClick = true;
+       
+        //if (timerCoroutine != null)
+        //{
+        //    StopCoroutine(timerCoroutine);
+        //    timerCoroutine = null;
+            
+        //}
+
+        //isAnswered = true;
+        //reset timer text
+        //timerText.text = "";
         Time.timeScale = 1f;
         yield return null;
         player.EnableMovement();

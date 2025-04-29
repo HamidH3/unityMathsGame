@@ -87,8 +87,12 @@ public class SettingsButtonController : MonoBehaviour
     public GameObject settingsPanel;
     public List<GameObject> MainMenuButtons;
     public Narrator narrator;
+
+    
     public Slider volumeSlider;
+    public Slider soundEffectsSlider;
     public AudioSource backgroundMusicSource;
+    public List<AudioSource> soundEffects;
 
     private enum MenuState { None, Guide, Settings }
     private MenuState currentState = MenuState.None;
@@ -111,7 +115,22 @@ public class SettingsButtonController : MonoBehaviour
             backgroundMusicSource.volume = 1f;
         }
 
+        if (PlayerPrefs.HasKey("SoundEffects"))
+        {
+            float savedSoundEffectsVol = PlayerPrefs.GetFloat("SoundEffects");
+            soundEffectsSlider.value = savedSoundEffectsVol;
+            SetSoundEffectVolume(savedSoundEffectsVol);
+        }
+        else
+        {
+            soundEffectsSlider.value = 1f;
+            SetSoundEffectVolume(1f);
+        }
+
+
         volumeSlider.onValueChanged.AddListener(OnVolumeChanged);
+        soundEffectsSlider.onValueChanged.AddListener(OnSoundEffectChanged);
+
     }
 
     public void ToggleGuide()
@@ -120,6 +139,7 @@ public class SettingsButtonController : MonoBehaviour
         {
             // Close the guide panel
             guidePanel.SetActive(false);
+            narrator.HideMessage();
             currentState = MenuState.None;
         }
         else
@@ -153,6 +173,7 @@ public class SettingsButtonController : MonoBehaviour
 
         // Hide other panels and main menu buttons while Settings is open
         guidePanel.SetActive(false);
+        narrator.HideMessage();
         foreach (GameObject button in MainMenuButtons)
         {
             button.SetActive(currentState == MenuState.None);
@@ -190,5 +211,21 @@ public class SettingsButtonController : MonoBehaviour
         backgroundMusicSource.volume = masterVolume; // Set global volume
         PlayerPrefs.SetFloat("MasterVolume", masterVolume); // Save it
         PlayerPrefs.Save();
+    }
+    private void OnSoundEffectChanged(float volume)
+    {
+        SetSoundEffectVolume(volume);
+        PlayerPrefs.SetFloat("SoundEffects", volume); // Save it
+        PlayerPrefs.Save();
+    }
+    private void SetSoundEffectVolume(float volume)
+    {
+        foreach (AudioSource vol in soundEffects)
+        {
+            if (vol != null)
+            {
+                vol.volume = volume;
+            }
+        }
     }
 }
