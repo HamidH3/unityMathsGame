@@ -358,23 +358,8 @@ public class QuestionGenerator : MonoBehaviour
     IEnumerator QPanelClose()
     {
         QPanel.SetActive(false);
-        //if (timerTickSound.isPlaying)
-        //{
-        //    timerTickSound.Stop();
-        //}
         spaceShip.canClick = true;
         billboard.canClick = true;
-       
-        //if (timerCoroutine != null)
-        //{
-        //    StopCoroutine(timerCoroutine);
-        //    timerCoroutine = null;
-            
-        //}
-
-        //isAnswered = true;
-        //reset timer text
-        //timerText.text = "";
         Time.timeScale = 1f;
         yield return null;
         player.EnableMovement();
