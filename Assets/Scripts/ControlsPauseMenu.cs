@@ -23,7 +23,7 @@ public class ControlsPauseMenu : MonoBehaviour
 
     private void Start()
     {
-        // Hide panels at the start
+        // hide panels at the start
         controlPanel.SetActive(false);
         settingsPanel.SetActive(false);
 
@@ -118,14 +118,14 @@ public class ControlsPauseMenu : MonoBehaviour
 
     private void OnVolumeChanged(float masterVolume)
     {
-        backgroundMusicSource.volume = masterVolume; // Set global volume
-        PlayerPrefs.SetFloat("MasterVolume", masterVolume); // Save it
+        backgroundMusicSource.volume = masterVolume; 
+        PlayerPrefs.SetFloat("MasterVolume", masterVolume); 
         PlayerPrefs.Save();
     }
     private void OnSoundEffectChanged(float volume)
     {
         SetSoundEffectVolume(volume);
-        PlayerPrefs.SetFloat("SoundEffects", volume); // Save it
+        PlayerPrefs.SetFloat("SoundEffects", volume); 
         PlayerPrefs.Save();
     }
     private void SetSoundEffectVolume(float volume)

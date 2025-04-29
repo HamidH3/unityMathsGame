@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine.UI;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 
 public class QuestionData
@@ -48,6 +49,7 @@ public class QuestionGenerator : MonoBehaviour
 
     //use List of QuestionData type, which contains question, playerAns, correctAns, and also bool isCorrect
     private List<QuestionData> questionHistory = new List<QuestionData>();
+    
     public bool correct = false;
 
     //initialising values
@@ -62,6 +64,7 @@ public class QuestionGenerator : MonoBehaviour
     public Player player;
     public Instructions billboard;
     public SpaceShip spaceShip;
+    public CanvasScript canvasScript;
 
 
     //soundEffects
@@ -75,11 +78,9 @@ public class QuestionGenerator : MonoBehaviour
 
     private string apiKey = EnvLoaderAPIKey.GetEnv("API_KEY");
     private string correctAns = "";
-    //private string apiKey = ""; // <-- replace this with your OpenAI key
 
     public void Start()
     {
-        //mathsBoxManager.ActivateRandomBox();
         
 
         Debug.Log("Loaded API Key: " + apiKey);
@@ -419,6 +420,12 @@ public class QuestionGenerator : MonoBehaviour
     //health bar fill
     public void UpdateHealthBarFill(int healthVal)
     {
+        //if user dies, call the alternative ending panel
+        if (healthVal == 0)
+        {
+            canvasScript.DiedEndMenu();
+        }
+
         if (healthBarFill != null && maxHealth > 0)
         {
             float currentFill = (float)healthVal / maxHealth; 
@@ -427,12 +434,12 @@ public class QuestionGenerator : MonoBehaviour
             {
                 if (currentFill > prevFill)
                 {
-                    // Health increased: fill from left
+                    // health increased: fill from left
                     healthBarFill.fillOrigin = (int)Image.OriginHorizontal.Right;
                 }
                 else if (currentFill < prevFill)
                 {
-                    // Health decreased: fill from right
+                    // health decreased: fill from right
                     healthBarFill.fillOrigin = (int)Image.OriginHorizontal.Left;
                 }
             }

@@ -13,10 +13,8 @@ public class CanvasScript : MonoBehaviour
     public GameObject BillBoardCloseup;
     public GameObject ShopPanel;
     public GameObject EndMenu;
-    ////mainmenu buttons
-    //public GameObject SettingsPanel;
-    //public GameObject MainMenuButtons;
-    public Animator animator;
+    public GameObject diedEndMenu;
+    
 
 
     private bool isPaused = false;
@@ -26,7 +24,8 @@ public class CanvasScript : MonoBehaviour
     public SpaceShip spaceShip;
     public ControlsPauseMenu controlsPauseMenu;
     public Instructions billboard;
-    // Start is called before the first frame update
+    public Narrator narrator;
+    public Animator animator;
 
     private void Start()
     {
@@ -208,9 +207,20 @@ public class CanvasScript : MonoBehaviour
     public void PlayAgainButton()
     {
         EndMenu.SetActive(false);
+        diedEndMenu.SetActive(false);
         MainMenu.SetActive(true);
         spaceShip.canClick = true;
         billboard.canClick = true;
+    }
+
+    //alternative end menu called when users health runs out
+    public void DiedEndMenu()
+    {
+        diedEndMenu.SetActive(true);
+        narrator.ShowMessage("Unfortunately your health was too low... Better luck next time!");
+        player.DisableMovement();
+        spaceShip.canClick = false;
+        billboard.canClick = false;
     }
 
 

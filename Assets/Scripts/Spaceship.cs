@@ -15,12 +15,6 @@ public class SpaceShip : MonoBehaviour
 
     public bool canClick = true;
 
-    private void Start()
-    {
-        //narrator = FindObjectOfType<Narrator>();
-         
-
-    }
     private void OnMouseDown()
     {
         //this is determined from other panel scripts when theyre open to stop you from clicking the spaceship from the background
