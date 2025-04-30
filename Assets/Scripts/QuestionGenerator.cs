@@ -49,6 +49,8 @@ public class QuestionGenerator : MonoBehaviour
 
     //use List of QuestionData type, which contains question, playerAns, correctAns, and also bool isCorrect
     private List<QuestionData> questionHistory = new List<QuestionData>();
+    private HashSet<string> generatedQuestions = new HashSet<string>();
+
 
     public bool correct = false;
 
@@ -56,15 +58,17 @@ public class QuestionGenerator : MonoBehaviour
     private bool isGenerating = false;
     public int points = 0;
     public int level = 1;
-    public int health = 25;
-    public int maxHealth = 25;
-    private bool hasKey = false;
+    public int health = 10;
+    public int maxHealth = 10;
+    public bool hasKey = false;
 
     public GameObject QPanel;
     public Player player;
     public Instructions billboard;
     public SpaceShip spaceShip;
     public CanvasScript canvasScript;
+    public ShopController shopController;
+    public CaveDoor caveDoor;
 
 
     //soundEffects
@@ -86,8 +90,8 @@ public class QuestionGenerator : MonoBehaviour
 
         points = 0;
         level = 1;
-        health = 25;
-        maxHealth = 25;
+        health = 10;
+        maxHealth = 10;
         SetKeyFaded(!hasKey);
         UpdateFuelBars(0);
         UpdateHealthBarFill(health);
@@ -145,55 +149,122 @@ public class QuestionGenerator : MonoBehaviour
                       'wrong2': '15'
                     }";
         }
-        //the prompts I created is my payload (data being sent)
-        var payload = new JObject { ["prompt"] = prompt };
-        //payload is formatted using encoding
-        var bodyRaw = System.Text.Encoding.UTF8.GetBytes(payload.ToString());
-
-        //prompt is sent using POST request
-        using (var request = new UnityWebRequest($"{backendURL}/ask", "POST"))
+        int retries = 5;
+        JObject finalResponse = null;
+        string finalQuestion = "";
+        while (retries-- > 0)
         {
-            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            request.downloadHandler = new DownloadHandlerBuffer();
-            request.SetRequestHeader("Content-Type", "application/json");
+            var payload = new JObject { ["prompt"] = prompt };
+            var bodyRaw = System.Text.Encoding.UTF8.GetBytes(payload.ToString());
 
-            yield return request.SendWebRequest();
-
-            if (request.result != UnityWebRequest.Result.Success)
+            using (var request = new UnityWebRequest($"{backendURL}/ask", "POST"))
             {
-                Debug.LogError($"Backend error: {request.error}");
-                questionText.text = "Error generating question.";
-            }
-            else
-            {
+                request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+                request.downloadHandler = new DownloadHandlerBuffer();
+                request.SetRequestHeader("Content-Type", "application/json");
 
-                JObject res = JObject.Parse(request.downloadHandler.text);
+                yield return request.SendWebRequest();
 
-                questionText.text = res["question"].ToString();
-                correctAns = res["correct"].ToString();
-
-                // shuffle answers
-                var answers = new List<string> {
-                res["correct"].ToString(),
-                res["wrong1"].ToString(),
-                res["wrong2"].ToString()
-            };
-                for (int i = 0; i < answers.Count; i++)
+                if (request.result != UnityWebRequest.Result.Success)
                 {
-                    int j = Random.Range(i, answers.Count);
-                    (answers[i], answers[j]) = (answers[j], answers[i]);
+                    Debug.LogError($"Backend error: {request.error}");
+                    questionText.text = "Error generating question.";
+                    isGenerating = false;
+                    yield break;
                 }
 
-                for (int k = 0; k < ansButtons.Length; k++)
-                    ansButtons[k].text = answers[k];
+                JObject res = JObject.Parse(request.downloadHandler.text);
+                string newQuestion = res["question"].ToString();
 
-                // start the timer.
-                if (timerCoroutine != null) StopCoroutine(timerCoroutine);
-                timerCoroutine = StartCoroutine(StartTimer(10));
+                if (!generatedQuestions.Contains(newQuestion))
+                {
+                    finalResponse = res;
+                    finalQuestion = newQuestion;
+                    generatedQuestions.Add(newQuestion);
+                    break;
+                }
+                else
+                {
+                    Debug.Log("Duplicate question found, retrying...");
+                    // Save in case all retries fail
+                    finalResponse = res;
+                    finalQuestion = newQuestion;
+                }
             }
         }
 
+        // Use finalResponse, even if duplicate
+        questionText.text = finalQuestion;
+        correctAns = finalResponse["correct"].ToString();
+
+        var answers = new List<string> {
+        finalResponse["correct"].ToString(),
+        finalResponse["wrong1"].ToString(),
+        finalResponse["wrong2"].ToString()
+    };
+
+        for (int i = 0; i < answers.Count; i++)
+        {
+            int j = Random.Range(i, answers.Count);
+            (answers[i], answers[j]) = (answers[j], answers[i]);
+        }
+
+        for (int k = 0; k < ansButtons.Length; k++)
+            ansButtons[k].text = answers[k];
+
+        if (timerCoroutine != null) StopCoroutine(timerCoroutine);
+        timerCoroutine = StartCoroutine(StartTimer(10));
+
         isGenerating = false;
+        ////the prompts I created is my payload (data being sent)
+        //var payload = new JObject { ["prompt"] = prompt };
+        ////payload is formatted using encoding
+        //var bodyRaw = System.Text.Encoding.UTF8.GetBytes(payload.ToString());
+
+        ////prompt is sent using POST request
+        //using (var request = new UnityWebRequest($"{backendURL}/ask", "POST"))
+        //{
+        //    request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+        //    request.downloadHandler = new DownloadHandlerBuffer();
+        //    request.SetRequestHeader("Content-Type", "application/json");
+
+        //    yield return request.SendWebRequest();
+
+        //    if (request.result != UnityWebRequest.Result.Success)
+        //    {
+        //        Debug.LogError($"Backend error: {request.error}");
+        //        questionText.text = "Error generating question.";
+        //    }
+        //    else
+        //    {
+
+        //        JObject res = JObject.Parse(request.downloadHandler.text);
+
+        //        questionText.text = res["question"].ToString();
+        //        correctAns = res["correct"].ToString();
+
+        //        // shuffle answers
+        //        var answers = new List<string> {
+        //        res["correct"].ToString(),
+        //        res["wrong1"].ToString(),
+        //        res["wrong2"].ToString()
+        //    };
+        //        for (int i = 0; i < answers.Count; i++)
+        //        {
+        //            int j = Random.Range(i, answers.Count);
+        //            (answers[i], answers[j]) = (answers[j], answers[i]);
+        //        }
+
+        //        for (int k = 0; k < ansButtons.Length; k++)
+        //            ansButtons[k].text = answers[k];
+
+        //        // start the timer.
+        //        if (timerCoroutine != null) StopCoroutine(timerCoroutine);
+        //        timerCoroutine = StartCoroutine(StartTimer(10));
+        //    }
+        //}
+
+        //isGenerating = false;
     }
 
 
@@ -236,8 +307,7 @@ public class QuestionGenerator : MonoBehaviour
         UpdateHealthBarFill(health);
         yield return new WaitForSeconds(1f);
         StartCoroutine(QPanelClose());
-        //mathsBoxManager.SwapToNewBox();
-        //spawns.RespawnChest();
+
 
 
     }
@@ -394,19 +464,19 @@ public class QuestionGenerator : MonoBehaviour
         {
             float currentFill = (float)healthVal / maxHealth;
 
-            if (prevFill >= 0f)
-            {
-                if (currentFill > prevFill)
-                {
-                    // health increased: fill from left
-                    healthBarFill.fillOrigin = (int)Image.OriginHorizontal.Right;
-                }
-                else if (currentFill < prevFill)
-                {
-                    // health decreased: fill from right
-                    healthBarFill.fillOrigin = (int)Image.OriginHorizontal.Left;
-                }
-            }
+            //if (prevFill >= 0f)
+            //{
+            //if (currentFill > prevFill)
+            //{
+            // health increased: fill from left
+            //    healthBarFill.fillOrigin = (int)Image.OriginHorizontal.Right;
+            //}
+            //else if (currentFill < prevFill)
+            //{
+            // health decreased: fill from right
+            healthBarFill.fillOrigin = (int)Image.OriginHorizontal.Left;
+            //}
+            //}
 
             healthBarFill.fillAmount = currentFill;
             prevFill = currentFill;
@@ -414,7 +484,21 @@ public class QuestionGenerator : MonoBehaviour
     }
 
 
+    public void ResetPlayer()
+    {
+        health = maxHealth;
+        points = 0;
+        level = 1;
+        questionHistory.Clear();
+        hasKey = false;
+        UpdateFuelBars(0);
+        caveDoor.ResetCaveDoor();
+        shopController.hasEnoughFuel = false;
+        UpdateHealthBarFill(maxHealth);
+        UpdateMainScreenOverlay();
+        UpdateKeyImageColour();
 
+    }
 
 }
 

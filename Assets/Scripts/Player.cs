@@ -39,7 +39,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         if (!canMove) return;
-        
+
         // Get horizontal input
         horizontalInput = Input.GetAxis("Horizontal");
 
@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
             Jump();
             Flip();
         }
-        
+
 
         animator.SetFloat("xVelocity", Mathf.Abs(body.velocity.x));
         animator.SetFloat("yVelocity", body.velocity.y);
@@ -62,13 +62,13 @@ public class Player : MonoBehaviour
             animator.SetBool("isFalling", true);
             animator.SetBool("isJumping", false);
 
-            
+
         }
         //check if avatar landed
         if (isGrounded)
         {
             animator.SetBool("isFalling", false);
-            animator.SetBool("isJumping", false); 
+            animator.SetBool("isJumping", false);
         }
         if (currPlatform != null)
         {
@@ -85,12 +85,12 @@ public class Player : MonoBehaviour
     private void MoveHorizontally()
     {
         if (canMove)
-            //player is only able to move horizontally if canMove is true
+        //player is only able to move horizontally if canMove is true
         {
             body.velocity = new Vector2(horizontalInput * moveSpeed, body.velocity.y);
         }
         // Apply horizontal movement
-       
+
 
         // Update animator parameters
         animator.SetFloat("xVelocity", Mathf.Abs(body.velocity.x));
@@ -308,7 +308,7 @@ public class Player : MonoBehaviour
     //        transform.SetParent(null);
 
     //        currPlatform = null;
-            
+
     //    }
     //    if (collision.gameObject.CompareTag("Ground"))
     //    {
@@ -332,7 +332,7 @@ public class Player : MonoBehaviour
             // Make sure to unparent the player from the platform only if the platform is active
             //if (collision.gameObject.activeInHierarchy)
             //{
-                //transform.SetParent(null);
+            //transform.SetParent(null);
             currPlatform = null;
             //}
             //}
@@ -383,11 +383,11 @@ public class Player : MonoBehaviour
     public void DisableMovement()
     {
         canMove = false;
-       
+
     }
 
 
- 
+
 
 
 

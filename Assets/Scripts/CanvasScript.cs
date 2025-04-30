@@ -14,7 +14,7 @@ public class CanvasScript : MonoBehaviour
     public GameObject ShopPanel;
     public GameObject EndMenu;
     public GameObject diedEndMenu;
-    
+
 
 
     private bool isPaused = false;
@@ -61,7 +61,8 @@ public class CanvasScript : MonoBehaviour
 
     private void Update()
     {
-        if (MainMenu.activeSelf) {
+        if (MainMenu.activeSelf)
+        {
             return;
         }
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -74,7 +75,7 @@ public class CanvasScript : MonoBehaviour
             {
                 OpenPauseMenu();
             }
-           
+
         }
     }
 
@@ -92,7 +93,7 @@ public class CanvasScript : MonoBehaviour
         MainScreenOverlay.SetActive(true);
         if (questionGenerator != null)
         {
-            questionGenerator.UpdateMainScreenOverlay(); 
+            questionGenerator.UpdateMainScreenOverlay();
         }
     }
 
@@ -172,12 +173,12 @@ public class CanvasScript : MonoBehaviour
 
     }
 
-   
+
 
     //Question Panel
     public void QPanelClose()
     {
-       questionGenerator.OnCloseButtonPressed();
+        questionGenerator.OnCloseButtonPressed();
 
     }
     public void QPanelOpen()
@@ -206,8 +207,19 @@ public class CanvasScript : MonoBehaviour
     public void PlayAgainButton()
     {
         EndMenu.SetActive(false);
+        QPanel.SetActive(false);
         diedEndMenu.SetActive(false);
         MainMenu.SetActive(true);
+        narrator.HideMessage();
+
+        //reset game state
+
+        if (questionGenerator != null)
+        {
+            questionGenerator.ResetPlayer();
+
+        }
+        //questionGenerator.hasKey = false;
         spaceShip.canClick = true;
         billboard.canClick = true;
     }
@@ -249,6 +261,7 @@ public class CanvasScript : MonoBehaviour
         {
             ShopPanel.SetActive(false);
             spaceShip.canClick = true;
+            narrator.HideMessage();
 
             Time.timeScale = 1f;
             player.EnableMovement();

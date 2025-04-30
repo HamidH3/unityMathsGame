@@ -17,9 +17,9 @@ public class ShopController : MonoBehaviour
     public bool HasEnoughFuel => hasEnoughFuel;
     //health buttons
     private int healthToBuy = 0;
-    private const int healthIncrease = 5;
+    private const int healthIncrease = 2;
     private const int healthPointCost = 1; //1 cost for 5 health points
-    
+
     public TMP_Text healthCounterText;
     public Narrator narrator;
 
@@ -40,16 +40,18 @@ public class ShopController : MonoBehaviour
     public void SelectHealth()
     {
         selectedItem = ShopItem.Health;
-        narrator.ShowMessage("Selected: +5 Health for 1 point. Click 'Buy' to confirm!");
+        narrator.ShowMessage("Selected: +2 Health for 1 point. Click 'Buy' to confirm!");
     }
-    public void SelectFuel() {
+    public void SelectFuel()
+    {
         selectedItem = ShopItem.Fuel;
         narrator.ShowMessage("Selected: +1 bar of Fuel for 5 points. Click 'Buy' to confirm!");
     }
 
     public void BuyToConfirm()
     {
-        switch (selectedItem) {
+        switch (selectedItem)
+        {
             case ShopItem.None:
                 narrator.ShowMessage("Please select an item before buying!");
                 break;
@@ -69,8 +71,8 @@ public class ShopController : MonoBehaviour
         if (questionGenerator == null) return;
         selectedItem = ShopItem.Health;
 
-            healthToBuy++;
-            UpdateHealthCounter();
+        healthToBuy++;
+        UpdateHealthCounter();
 
     }
 
@@ -164,14 +166,14 @@ public class ShopController : MonoBehaviour
             if (fuel > maxFuelBar)
             {
                 fuel = maxFuelBar;
-            }   
+            }
             questionGenerator.UpdateFuelBars(fuel);
             questionGenerator.UpdateMainScreenOverlay();
             if (fuel >= maxFuelBar)
             {
                 hasEnoughFuel = true;
             }
-        } 
+        }
 
         narrator.ShowMessage($"Purchased 1 fuel bar for {fuelCost} points. Current fuel: {fuel}/{maxFuelBar}");
     }
