@@ -34,7 +34,7 @@ public class QuestionGenerator : MonoBehaviour
     public TMP_Text timerText;
     private Coroutine timerCoroutine;
     private bool isAnswered = false;
-    
+
     //MainScreenOverlay
     public TMP_Text levelText;
     public TMP_Text pointsText;
@@ -49,7 +49,7 @@ public class QuestionGenerator : MonoBehaviour
 
     //use List of QuestionData type, which contains question, playerAns, correctAns, and also bool isCorrect
     private List<QuestionData> questionHistory = new List<QuestionData>();
-    
+
     public bool correct = false;
 
     //initialising values
@@ -74,16 +74,16 @@ public class QuestionGenerator : MonoBehaviour
     public AudioSource buzzerSound;
 
 
+    //adding api key from backend
+    public string backendURL = "https://unitybackend.onrender.com";
+    public string RetrievedApiKey { get; private set; }
 
-
-    private string apiKey = EnvLoaderAPIKey.GetEnv("API_KEY");
+    //private string apiKey = EnvLoaderAPIKey.GetEnv("API_KEY");
     private string correctAns = "";
 
     public void Start()
     {
-        
 
-        Debug.Log("Loaded API Key: " + apiKey);
         points = 0;
         level = 1;
         health = 25;
@@ -93,8 +93,8 @@ public class QuestionGenerator : MonoBehaviour
         UpdateHealthBarFill(health);
         UpdateMainScreenOverlay();
 
-       
     }
+
     public void GenerateQuestion()
     {
         //Debug.Log("Generating question...");
@@ -125,7 +125,7 @@ public class QuestionGenerator : MonoBehaviour
                       'wrong2': '12'
                     }";
         }
-        else if (level == 2) 
+        else if (level == 2)
         {
             prompt = @"Generate a math question with random numbers using multiplication or division. Return JSON like:
                     { 
@@ -145,102 +145,67 @@ public class QuestionGenerator : MonoBehaviour
                       'wrong2': '15'
                     }";
         }
-        var requestJson = new JObject
-        {
-            ["model"] = "gpt-3.5-turbo",
-            ["messages"] = new JArray
-    {
-        new JObject
-        {
-            ["role"] = "user",
-            ["content"] = prompt
-        }
-    }
-        };
+        //the prompts I created is my payload (data being sent)
+        var payload = new JObject { ["prompt"] = prompt };
+        //payload is formatted using encoding
+        var bodyRaw = System.Text.Encoding.UTF8.GetBytes(payload.ToString());
 
-        string requestBody = requestJson.ToString();
-
-        using (UnityWebRequest request = new UnityWebRequest("https://api.openai.com/v1/chat/completions", "POST"))
+        //prompt is sent using POST request
+        using (var request = new UnityWebRequest($"{backendURL}/ask", "POST"))
         {
-            byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(requestBody);
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/json");
-            request.SetRequestHeader("Authorization", "Bearer " + apiKey);
 
             yield return request.SendWebRequest();
 
             if (request.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError("GPT API error: " + request.error);
+                Debug.LogError($"Backend error: {request.error}");
                 questionText.text = "Error generating question.";
             }
             else
             {
-                string jsonResponse = request.downloadHandler.text;
-                JObject result = JObject.Parse(jsonResponse);
-                string content = result["choices"][0]["message"]["content"].ToString();
 
-                //res holds the full result in json format of gpt generated answer
-                JObject res = JObject.Parse (content);
+                JObject res = JObject.Parse(request.downloadHandler.text);
 
                 questionText.text = res["question"].ToString();
                 correctAns = res["correct"].ToString();
 
-                string[] answers = new string[]
+                // shuffle answers
+                var answers = new List<string> {
+                res["correct"].ToString(),
+                res["wrong1"].ToString(),
+                res["wrong2"].ToString()
+            };
+                for (int i = 0; i < answers.Count; i++)
                 {
-                    res["correct"].ToString(),
-                    res["wrong1"].ToString(),
-                    res["wrong2"].ToString()
-                };
-                //switch answer positions randomly here:
-                for (int i = answers.Length - 1; i > 0; i--)
-                {
-                    int randomNum = Random.Range(0, i + 1);
-                    (answers[i], answers[randomNum]) = (answers[randomNum], answers[i]);
+                    int j = Random.Range(i, answers.Count);
+                    (answers[i], answers[j]) = (answers[j], answers[i]);
                 }
 
-                for (int j = 0; j < ansButtons.Length; j++)
-                {
-                    ansButtons[j].text = answers[j];
-                }
-                //check if you closed the qpanel before timer started
-                if (!QPanel.activeSelf)
-                {
-                    Debug.Log("QPanel was closed before timer start. Timer will not run.");
-                    isGenerating = false;
-                    yield break;
-                }
+                for (int k = 0; k < ansButtons.Length; k++)
+                    ansButtons[k].text = answers[k];
 
-                //here start the timer when the question and answers are generated (when this method
-                //is called in GenerateQuestion, which is directly called in MathsBox.cs)
-                if (timerCoroutine != null)
-                {
-
-                    StopCoroutine(timerCoroutine);
-                }
-                if (!QPanel.activeSelf)
-                {
-                    isGenerating = false;
-                    yield break; // don't run timer if question panel is closed
-                }
+                // start the timer.
+                if (timerCoroutine != null) StopCoroutine(timerCoroutine);
                 timerCoroutine = StartCoroutine(StartTimer(10));
             }
-            isGenerating = false;
         }
+
+        isGenerating = false;
     }
+
 
     IEnumerator StartTimer(int secs)
     {
         //check if qpanel is closed even after timer started
-       
-
 
         int timeLeft = secs;
-        while ( timeLeft> 0) 
+        while (timeLeft > 0)
         {
             if (!QPanel.activeSelf)
-                //if panel was closed during timer, stop timer
+            //if panel was closed during timer, stop timer
             {
                 Debug.Log("StartTimer aborted: QPanel was closed.");
                 //timerTickSound.Stop();
@@ -253,7 +218,7 @@ public class QuestionGenerator : MonoBehaviour
 
             if (isAnswered)
             {
-                
+
                 yield break;
 
             }
@@ -308,11 +273,11 @@ public class QuestionGenerator : MonoBehaviour
         }
 
         int previousLevel = level;
-        if (points >= 0 && points <=4 )
+        if (points >= 0 && points <= 4)
         {
             level = 1;
         }
-        else if (points >= 5 && points <=9)
+        else if (points >= 5 && points <= 9)
         {
             level = 2;
         }
@@ -333,8 +298,7 @@ public class QuestionGenerator : MonoBehaviour
     {
         Debug.Log(ansButtons[i]);
         CheckAns(ansButtons[i].text);
-        //spawns.EndQAndRespawn();
-        //spawns.ResumeSpawning();
+
     }
     public void OnCloseButtonPressed()
     {
@@ -413,7 +377,7 @@ public class QuestionGenerator : MonoBehaviour
         for (int i = 0; i < fuel; i++)
             if (i < fuelBars.Count)
             {
-                fuelBars[i].enabled = true; 
+                fuelBars[i].enabled = true;
             }
     }
 
@@ -428,7 +392,7 @@ public class QuestionGenerator : MonoBehaviour
 
         if (healthBarFill != null && maxHealth > 0)
         {
-            float currentFill = (float)healthVal / maxHealth; 
+            float currentFill = (float)healthVal / maxHealth;
 
             if (prevFill >= 0f)
             {
