@@ -123,7 +123,6 @@ public class CanvasScript : MonoBehaviour
             historyText += $"Q: {data.question}\n";
             historyText += $"Your Answer: {data.playerAns}\n";
             historyText += $"Correct Answer: {data.correctAnswer}\n";
-            //historyText += $"Correct: {data.isCorrect}\n\n";
             if (data.isCorrect)
             {
                 historyText += $"Correct\n\n";

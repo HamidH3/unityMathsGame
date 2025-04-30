@@ -6,6 +6,7 @@ public class Instructions : MonoBehaviour
 {
     public bool canClick = true;
     public SpaceShip spaceShip;
+    //this can be called for multiple GameObjects, but in this case its only called for 'billboard' panel
     [Header("Panel to Show When Clicked")]
     public GameObject OpenPanel;
 
