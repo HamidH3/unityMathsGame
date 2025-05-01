@@ -7348,6 +7348,7 @@ MonoBehaviour:
   billboard: {fileID: 369486424}
   narrator: {fileID: 1876516811}
   animator: {fileID: 453916110}
+  endMenu: {fileID: 978857938}
 --- !u!1 &435371027
 GameObject:
   m_ObjectHideFlags: 0
@@ -15806,7 +15807,7 @@ Transform:
   m_GameObject: {fileID: 1104272618}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16, y: -2.1, z: 0}
+  m_LocalPosition: {x: 4.91, y: -2.15, z: 0}
   m_LocalScale: {x: 3.4, y: 3.4461176, z: 0.9434747}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -18175,15 +18176,20 @@ MonoBehaviour:
   level: 1
   health: 50
   maxHealth: 50
+  hasKey: 0
   QPanel: {fileID: 961591074}
+  keyObject: {fileID: 1990325513}
   player: {fileID: 1104272621}
   billboard: {fileID: 369486424}
   spaceShip: {fileID: 81459734}
   canvasScript: {fileID: 419393300}
+  shopController: {fileID: 1265897039}
+  caveDoor: {fileID: 207404738}
   correctSound: {fileID: 521336182}
   incorrectSound: {fileID: 1100767846}
   timerTickSound: {fileID: 1610545724}
   buzzerSound: {fileID: 1513398997}
+  backendURL: https://unitybackend.onrender.com
 --- !u!4 &1270168841
 Transform:
   m_ObjectHideFlags: 0
@@ -28746,7 +28752,7 @@ Transform:
   m_GameObject: {fileID: 1990325513}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 26.8, y: -17.39, z: 0}
+  m_LocalPosition: {x: 26.4, y: -17.33, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
