@@ -9,13 +9,35 @@ public class EndMenu : MonoBehaviour
     public Animator panelBackground;
 
 
-    void Start()
+    //void Start()
+    //{
+    //    narrator.ShowMessage("Well Done! You have completed the challenge using your superb maths knowledge!");
+    //    foreach (GameObject button in buttons)
+    //    {
+    //        button.SetActive(false);
+    //    }
+    //    //start timer here
+    //    StartCoroutine(ShowButtonsAfterAnim());
+    //    StartCoroutine(StopBckgroundAnim());
+    //}
+    public void InitializeEndMenu()
     {
-        narrator.ShowMessage("Well Done! You have completed the challenge using your superb maths knowledge!");
+        if (panelBackground != null)
+        {
+            panelBackground.speed = 1f;
+            panelBackground.Play(0); 
+        }
+
+        if (narrator != null)
+        {
+            narrator.ShowMessage("Well Done! You have completed the challenge using your superb maths knowledge!");
+        }
+
         foreach (GameObject button in buttons)
         {
             button.SetActive(false);
         }
+
         //start timer here
         StartCoroutine(ShowButtonsAfterAnim());
         StartCoroutine(StopBckgroundAnim());

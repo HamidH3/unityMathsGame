@@ -63,6 +63,7 @@ public class QuestionGenerator : MonoBehaviour
     public bool hasKey = false;
 
     public GameObject QPanel;
+    public GameObject keyObject;
     public Player player;
     public Instructions billboard;
     public SpaceShip spaceShip;
@@ -497,6 +498,16 @@ public class QuestionGenerator : MonoBehaviour
         UpdateHealthBarFill(maxHealth);
         UpdateMainScreenOverlay();
         UpdateKeyImageColour();
+        if (keyObject != null)
+        {
+            keyObject.SetActive(true);
+
+            Renderer keyRenderer = keyObject.GetComponent<Renderer>();
+            if (keyRenderer != null)
+            {
+                keyRenderer.enabled = true;
+            }
+        }
 
     }
 

@@ -26,6 +26,7 @@ public class CanvasScript : MonoBehaviour
     public Instructions billboard;
     public Narrator narrator;
     public Animator animator;
+    public EndMenu endMenu;
 
     private void Start()
     {
@@ -200,6 +201,7 @@ public class CanvasScript : MonoBehaviour
     public void EndMenuOpen()
     {
         EndMenu.SetActive(true);
+        endMenu.InitializeEndMenu();
         player.DisableMovement();
         spaceShip.canClick = false;
         billboard.canClick = false;
