@@ -176,7 +176,8 @@ public class QuestionGenerator : MonoBehaviour
 
                 JObject res = JObject.Parse(request.downloadHandler.text);
                 string newQuestion = res["question"].ToString();
-
+                
+                //this is used to store repeated questions and see if they are being repeated, then retry
                 if (!generatedQuestions.Contains(newQuestion))
                 {
                     finalResponse = res;
@@ -217,55 +218,7 @@ public class QuestionGenerator : MonoBehaviour
         timerCoroutine = StartCoroutine(StartTimer(10));
 
         isGenerating = false;
-        ////the prompts I created is my payload (data being sent)
-        //var payload = new JObject { ["prompt"] = prompt };
-        ////payload is formatted using encoding
-        //var bodyRaw = System.Text.Encoding.UTF8.GetBytes(payload.ToString());
-
-        ////prompt is sent using POST request
-        //using (var request = new UnityWebRequest($"{backendURL}/ask", "POST"))
-        //{
-        //    request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        //    request.downloadHandler = new DownloadHandlerBuffer();
-        //    request.SetRequestHeader("Content-Type", "application/json");
-
-        //    yield return request.SendWebRequest();
-
-        //    if (request.result != UnityWebRequest.Result.Success)
-        //    {
-        //        Debug.LogError($"Backend error: {request.error}");
-        //        questionText.text = "Error generating question.";
-        //    }
-        //    else
-        //    {
-
-        //        JObject res = JObject.Parse(request.downloadHandler.text);
-
-        //        questionText.text = res["question"].ToString();
-        //        correctAns = res["correct"].ToString();
-
-        //        // shuffle answers
-        //        var answers = new List<string> {
-        //        res["correct"].ToString(),
-        //        res["wrong1"].ToString(),
-        //        res["wrong2"].ToString()
-        //    };
-        //        for (int i = 0; i < answers.Count; i++)
-        //        {
-        //            int j = Random.Range(i, answers.Count);
-        //            (answers[i], answers[j]) = (answers[j], answers[i]);
-        //        }
-
-        //        for (int k = 0; k < ansButtons.Length; k++)
-        //            ansButtons[k].text = answers[k];
-
-        //        // start the timer.
-        //        if (timerCoroutine != null) StopCoroutine(timerCoroutine);
-        //        timerCoroutine = StartCoroutine(StartTimer(10));
-        //    }
-        //}
-
-        //isGenerating = false;
+     
     }
 
 
@@ -280,7 +233,6 @@ public class QuestionGenerator : MonoBehaviour
             //if panel was closed during timer, stop timer
             {
                 Debug.Log("StartTimer aborted: QPanel was closed.");
-                //timerTickSound.Stop();
                 yield break;
             }
             timerText.text = $"Time: {timeLeft}";
@@ -394,6 +346,9 @@ public class QuestionGenerator : MonoBehaviour
     IEnumerator QPanelClose()
     {
         QPanel.SetActive(false);
+        timerText.text = $"Time: ...";
+        for (int k = 0; k < ansButtons.Length; k++)
+            ansButtons[k].text = "...";
         spaceShip.canClick = true;
         billboard.canClick = true;
         Time.timeScale = 1f;

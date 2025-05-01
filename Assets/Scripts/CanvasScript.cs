@@ -62,7 +62,7 @@ public class CanvasScript : MonoBehaviour
 
     private void Update()
     {
-        if (MainMenu.activeSelf)
+        if (MainMenu.activeSelf || EndMenu.activeSelf || diedEndMenu.activeSelf)
         {
             return;
         }
