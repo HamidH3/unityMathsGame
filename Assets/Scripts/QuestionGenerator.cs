@@ -114,8 +114,9 @@ public class QuestionGenerator : MonoBehaviour
     IEnumerator CallGPTForQuestion()
     {
         isGenerating = true;
-        questionText.text = "Generating question...";
+        //questionText.text = "Generating question...";
         isAnswered = false;
+        Coroutine loadingText = StartCoroutine(LoadingText());
 
 
         string prompt = "";
@@ -194,7 +195,7 @@ public class QuestionGenerator : MonoBehaviour
                 }
             }
         }
-
+        StopCoroutine(loadingText);
         // Use finalResponse, even if duplicate
         questionText.text = finalQuestion;
         correctAns = finalResponse["correct"].ToString();
@@ -221,7 +222,18 @@ public class QuestionGenerator : MonoBehaviour
      
     }
 
-
+    IEnumerator LoadingText()
+    {
+        while (true)
+        {
+            questionText.text = "Generating question.";
+            yield return new WaitForSeconds(0.3f);
+            questionText.text = "Generating question..";
+            yield return new WaitForSeconds(0.3f);
+            questionText.text = "Generating question...";
+            yield return new WaitForSeconds(0.3f);
+        }
+    }
     IEnumerator StartTimer(int secs)
     {
         //check if qpanel is closed even after timer started
@@ -420,19 +432,9 @@ public class QuestionGenerator : MonoBehaviour
         {
             float currentFill = (float)healthVal / maxHealth;
 
-            //if (prevFill >= 0f)
-            //{
-            //if (currentFill > prevFill)
-            //{
-            // health increased: fill from left
-            //    healthBarFill.fillOrigin = (int)Image.OriginHorizontal.Right;
-            //}
-            //else if (currentFill < prevFill)
-            //{
-            // health decreased: fill from right
+           
             healthBarFill.fillOrigin = (int)Image.OriginHorizontal.Left;
-            //}
-            //}
+           
 
             healthBarFill.fillAmount = currentFill;
             prevFill = currentFill;
