@@ -70,6 +70,7 @@ public class QuestionGenerator : MonoBehaviour
     public CanvasScript canvasScript;
     public ShopController shopController;
     public CaveDoor caveDoor;
+    public MathsBoxManager mathsBoxManager;
 
 
     //soundEffects
@@ -78,6 +79,8 @@ public class QuestionGenerator : MonoBehaviour
     public AudioSource timerTickSound;
     public AudioSource buzzerSound;
 
+    //each maths box gameobject
+    
 
     //adding api key from backend
     public string backendURL = "https://unitybackend.onrender.com";
@@ -93,6 +96,7 @@ public class QuestionGenerator : MonoBehaviour
         level = 1;
         health = 10;
         maxHealth = 10;
+        mathsBoxManager.RandomLocation();
         SetKeyFaded(!hasKey);
         UpdateFuelBars(0);
         UpdateHealthBarFill(health);
@@ -366,6 +370,7 @@ public class QuestionGenerator : MonoBehaviour
         Time.timeScale = 1f;
         yield return null;
         player.EnableMovement();
+        mathsBoxManager.RandomLocation();
     }
 
     public void UpdateMainScreenOverlay()

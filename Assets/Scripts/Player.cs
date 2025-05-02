@@ -4,11 +4,11 @@ using System.Collections;
 
 public class Player : MonoBehaviour
 {
-    //public GameObject QPanel;
+
 
     private float horizontalInput;
     private float moveSpeed = 5f;
-    private float jumpForce = 4f;
+    private float jumpForce = 4.5f;
     public int maxJumps = 2;
     private int jumpCount = 0;
 
@@ -40,8 +40,16 @@ public class Player : MonoBehaviour
     {
         if (!canMove) return;
 
-        // Get horizontal input
-        horizontalInput = Input.GetAxis("Horizontal");
+
+        //Getting horizontal input. this ensures the keys are explicitely
+        //defined instead of using left and right arrows if i were
+        //to call Input.GetAxis("Horizontal");
+        horizontalInput = 0f;
+        if (Input.GetKey(KeyCode.A))
+            horizontalInput = -1f;
+        else if (Input.GetKey(KeyCode.D))
+            horizontalInput = 1f;
+
 
         if (canMove)
         {
@@ -118,8 +126,7 @@ public class Player : MonoBehaviour
         }
 
         if ((isGrounded && (
-            //Input.GetKey(KeyCode.LeftArrow) ||
-            //Input.GetKey(KeyCode.RightArrow) ||
+
             Input.GetKey(KeyCode.A) ||
             Input.GetKey(KeyCode.D)
             ) && Input.GetKeyDown(KeyCode.W))
@@ -136,43 +143,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    //private void HandleWallSliding()
-    //{
-    //    bool pressingTowardWall = (facingRight && horizontalInput > 0) || (!facingRight && horizontalInput < 0);
-    //    bool shouldWallSlide = !isGrounded && body.velocity.y < 0 && isTouchingWall && pressingTowardWall;
 
-    //    if (shouldWallSlide)
-    //    {
-    //        // Prevent horizontal movement while wall sliding
-    //        body.velocity = new Vector2(0, body.velocity.y);  // Keep vertical velocity, no horizontal movement
-
-    //        // Set the animator parameter for wall sliding
-    //        animator.SetBool("isWallSliding", true);
-    //        animator.SetBool("isJumping", false);
-    //        animator.SetBool("isFalling", false);
-    //        animator.SetBool("isGrounded", false);
-    //    }
-    //    else
-    //    {
-
-    //        // Transition back to falling animation if not wall sliding
-
-    //        // Transition to falling if velocity is downward and player isn't on the wall
-    //        if (!isTouchingWall && !isGrounded && body.velocity.y < 0)
-    //        {
-    //            //this is free falling
-    //            animator.SetBool("isWallSliding", false);
-    //            animator.SetBool("isFalling", true);
-    //            animator.SetBool("isJumping", false);
-    //        }
-    //        else if (isGrounded)
-    //        {
-    //            animator.SetBool("isWallSliding", false);  // Stop wall sliding animation
-    //            animator.SetBool("isFalling", false);  // Transition to idle or running
-    //        }
-
-    //    }
-    //}
     private void HandleWallSliding()
     {
         bool pressingTowardWall = (facingRight && horizontalInput > 0) || (!facingRight && horizontalInput < 0);
@@ -207,56 +178,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    //private void OnCollisionEnter2D(Collision2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("FloatingPlatform"))
-    //    {
-    //        transform.SetParent(collision.transform);
-    //        //MovingFloatingPlatform platform = collision.gameObject.GetComponent<MovingFloatingPlatform>();
-    //        //if (platform != null)
-    //        //{
-    //        //    currPlatform = platform;
-    //        isGrounded = true;
-    //        jumpCount = 0;
-    //        animator.SetBool("isGrounded", true);
-    //        animator.SetBool("isFalling", false);
-    //        animator.SetBool("isJumping", false);
-    //        animator.SetBool("isWallSliding", false); 
 
-
-    //        //}
-
-    //    }
-
-
-    //    if (collision.gameObject.CompareTag("Ground"))
-    //    {
-    //        isGrounded = true;
-    //        jumpCount = 0;
-    //        animator.SetBool("isGrounded", true);
-    //        animator.SetBool("isFalling", false);
-    //        animator.SetBool("isJumping", false);
-    //        animator.SetBool("isWallSliding", false);
-    //    }
-
-    //}
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //if (collision.gameObject.CompareTag("FloatingPlatform"))
-        //{
-        //    // Make sure the player is parented to the platform only if it is active
-        //    //if (collision.gameObject.activeInHierarchy)
-        //    //{
-        //    //transform.SetParent(collision.transform);
-        //    currPlatform = collision.gameObject.GetComponent<MovingFloatingPlatform>();
-        //    isGrounded = true;
-        //    jumpCount = 0;
-        //    animator.SetBool("isGrounded", true);
-        //    animator.SetBool("isFalling", false);
-        //    animator.SetBool("isJumping", false);
-        //    animator.SetBool("isWallSliding", false);
-        //    //}
-        //}
+
         if (collision.gameObject.CompareTag("FloatingPlatform"))
         {
             MovingFloatingPlatform platform = collision.gameObject.GetComponent<MovingFloatingPlatform>();
@@ -293,32 +218,7 @@ public class Player : MonoBehaviour
         }
     }
 
-    //private void OnCollisionExit2D(Collision2D collision)
-    //{
-    //    if (collision.gameObject.CompareTag("Wall"))
-    //    {
-    //        isTouchingWall = false;
-    //        animator.SetBool("isWallSliding", false);
-    //        animator.SetBool("isFalling", true);
-    //    }
 
-
-    //    if (collision.gameObject.CompareTag("FloatingPlatform"))
-    //    {
-    //        transform.SetParent(null);
-
-    //        currPlatform = null;
-
-    //    }
-    //    if (collision.gameObject.CompareTag("Ground"))
-    //    {
-    //        isGrounded = false;
-    //        animator.SetBool("isGrounded", false);
-
-
-    //    }
-
-    //}
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Wall"))

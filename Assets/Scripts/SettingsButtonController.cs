@@ -1,81 +1,4 @@
-//using System.Collections;
-//using System.Collections.Generic;
-//using UnityEngine;
-//using UnityEngine.UI;
 
-//public class Settings : MonoBehaviour
-//{
-//    public GameObject basicSettings; 
-//    public GameObject basicButton;
-//    //public GameObject MainMenuButtons;
-//    public List<GameObject> MainMenuButtons;
-//    public Slider volumeSlider;
-
-//    public AudioSource backgroundMusicSource;
-
-
-//    private bool settingsOpen = false;
-
-
-
-//    private void Start()
-//    {
-
-//        // Hide settings panel at start
-//        basicSettings.SetActive(false);
-
-//        if (PlayerPrefs.HasKey("MasterVolume"))
-//        {
-//            float savedVolume = PlayerPrefs.GetFloat("MasterVolume");
-//            volumeSlider.value = savedVolume;
-//            backgroundMusicSource.volume = savedVolume;
-//        }
-//        else
-//        {
-//            volumeSlider.value = 1f;
-//            backgroundMusicSource.volume = 1f;
-//        }
-//        volumeSlider.onValueChanged.AddListener(OnVolumeChanged);
-
-//    }
-
-//    public void ToggleSettings()
-//    {
-//        settingsOpen = !settingsOpen;
-
-//        if (settingsOpen)
-//        {
-
-//            // After movement, show settings panel
-//            basicSettings.SetActive(true);
-//            //MainMenuButtons.SetActive(false);
-//            foreach (GameObject button in MainMenuButtons)
-//            {
-//                button.SetActive(false);
-//            }
-//        }
-//        else
-//        {
-//            // Hide settings panel first
-//            basicSettings.SetActive(false);
-//            //MainMenuButtons.SetActive(true);
-//            foreach (GameObject button in MainMenuButtons)
-//            {
-//                button.SetActive(true);
-//            }
-
-
-//        }
-//    }
-//    private void OnVolumeChanged(float masterVolume)
-//    {
-//        backgroundMusicSource.volume = masterVolume; // Set global volume
-//        PlayerPrefs.SetFloat("MasterVolume", masterVolume); // Save it
-//        PlayerPrefs.Save();
-//    }
-
-
-//}
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -83,6 +6,11 @@ using UnityEngine.UI;
 
 public class SettingsButtonController : MonoBehaviour
 {
+    public GameObject controlPanel;
+    public List<GameObject> controlInstructions;
+
+
+
     public GameObject guidePanel;
     public GameObject settingsPanel;
     public List<GameObject> MainMenuButtons;
@@ -94,7 +22,7 @@ public class SettingsButtonController : MonoBehaviour
     public AudioSource backgroundMusicSource;
     public List<AudioSource> soundEffects;
 
-    private enum MenuState { None, Guide, Settings }
+    private enum MenuState { None, Guide, Settings, Controls }
     private MenuState currentState = MenuState.None;
 
     private void Start()
@@ -102,6 +30,8 @@ public class SettingsButtonController : MonoBehaviour
         // hide panels at the start
         guidePanel.SetActive(false);
         settingsPanel.SetActive(false);
+
+        controlPanel.SetActive(false);
 
         if (PlayerPrefs.HasKey("MasterVolume"))
         {
@@ -152,6 +82,8 @@ public class SettingsButtonController : MonoBehaviour
 
         // Hide other panels and main menu buttons while Guide is open
         settingsPanel.SetActive(false);
+        controlPanel.SetActive(false);
+
         foreach (GameObject button in MainMenuButtons)
         {
             button.SetActive(currentState == MenuState.None);
@@ -173,17 +105,49 @@ public class SettingsButtonController : MonoBehaviour
 
         // Hide other panels and main menu buttons while Settings is open
         guidePanel.SetActive(false);
+        controlPanel.SetActive(false);
+
         narrator.HideMessage();
         foreach (GameObject button in MainMenuButtons)
         {
             button.SetActive(currentState == MenuState.None);
         }
     }
+    public void ToggleControls()
+    {
+        if (currentState == MenuState.Controls)
+        {
+            // Close the guide panel
+            controlPanel.SetActive(false);
+            currentState = MenuState.None;
+        }
+        else
+        {
+
+            controlPanel.SetActive(true);
+            foreach (GameObject instructions in controlInstructions)
+            {
+                instructions.SetActive(true);
+            }
+            currentState = MenuState.Controls;
+        }
+
+        // Hide other panels and main menu buttons while Guide is open
+        settingsPanel.SetActive(false);
+        guidePanel.SetActive(false);
+        narrator.HideMessage();
+
+        foreach (GameObject button in MainMenuButtons)
+        {
+            button.SetActive(currentState == MenuState.None);
+        }
+
+    }
 
     public void BackButton()
     {
         // Handle the back button press logic
-        if (currentState == MenuState.Guide || currentState == MenuState.Settings)
+        if (currentState == MenuState.Guide || currentState == MenuState.Settings || currentState == MenuState.Controls)
         {
             // Close the current panel (either Guide or Settings)
             if (currentState == MenuState.Guide)
@@ -193,6 +157,10 @@ public class SettingsButtonController : MonoBehaviour
             else if (currentState == MenuState.Settings)
             {
                 settingsPanel.SetActive(false);
+            }
+            else if (currentState == MenuState.Controls)
+            {
+                controlPanel.SetActive(false);
             }
 
             // Show main menu buttons again
