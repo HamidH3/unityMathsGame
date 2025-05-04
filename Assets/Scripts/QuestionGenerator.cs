@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 
-
+//this class holds question data for history tracking
 public class QuestionData
 {
     public string question;
@@ -15,7 +15,7 @@ public class QuestionData
     public string correctAnswer;
     public bool isCorrect;
 
-    //constructor method to initalise the data values
+    //constructor method to set the values when storing a question attempt
     public QuestionData(string question, string playerAns, string correctAnswer, bool isCorrect)
     {
         this.question = question;
@@ -30,12 +30,12 @@ public class QuestionGenerator : MonoBehaviour
     public TMP_Text questionText;
     public TMP_Text[] ansButtons;
 
-    //timer
+    //timer and flags
     public TMP_Text timerText;
     private Coroutine timerCoroutine;
     private bool isAnswered = false;
 
-    //MainScreenOverlay
+    //MainScreenOverlay UI components
     public TMP_Text levelText;
     public TMP_Text pointsText;
     public TMP_Text healthBar;
@@ -43,25 +43,31 @@ public class QuestionGenerator : MonoBehaviour
     private float prevFill = -1f;
     public RawImage KeyImage;
 
+    //fuel UI bar display
     public List<RawImage> fuelBars;
 
-    public bool HasKey => hasKey;//this makes (read-only) boolean HasKey public
+    //this makes (read-only) boolean HasKey public
+    public bool HasKey => hasKey;
 
     //use List of QuestionData type, which contains question, playerAns, correctAns, and also bool isCorrect
     private List<QuestionData> questionHistory = new List<QuestionData>();
+
+    //used to store determine repeated questions from maths box generator
     private HashSet<string> generatedQuestions = new HashSet<string>();
 
 
-    public bool correct = false;
 
-    //initialising values
+
+    //initialising some default values and flags
     private bool isGenerating = false;
     public int points = 0;
     public int level = 1;
     public int health = 10;
     public int maxHealth = 10;
     public bool hasKey = false;
-
+    public bool correct = false;
+    
+    //references to UI panels and scripts
     public GameObject QPanel;
     public GameObject keyObject;
     public Player player;
@@ -103,18 +109,16 @@ public class QuestionGenerator : MonoBehaviour
         UpdateMainScreenOverlay();
 
     }
-
+    //starts process of generating question, called in other script
     public void GenerateQuestion()
     {
-        //Debug.Log("Generating question...");
         if (!isGenerating)
         {
-            //spawns.PauseSpawning();
             StartCoroutine(CallGPTForQuestion());
-
         }
     }
 
+    //calls backend server to receive new message based on level
     IEnumerator CallGPTForQuestion()
     {
         isGenerating = true;
@@ -124,7 +128,7 @@ public class QuestionGenerator : MonoBehaviour
 
 
         string prompt = "";
-
+        //here prompts are set based on user level
         if (level == 1)
         {
             prompt = @"Generate a math question with random numbers using addition or subtraction only. Return in JSON format like:
@@ -155,14 +159,17 @@ public class QuestionGenerator : MonoBehaviour
                       'wrong2': '15'
                     }";
         }
+        //retry in the case of receiving duplicate questions
         int retries = 5;
         JObject finalResponse = null;
         string finalQuestion = "";
         while (retries-- > 0)
         {
+            //set the payload and convert it to string
             var payload = new JObject { ["prompt"] = prompt };
             var bodyRaw = System.Text.Encoding.UTF8.GetBytes(payload.ToString());
 
+            //send POST request to backend server using message body contaning the specific prompt per request
             using (var request = new UnityWebRequest($"{backendURL}/ask", "POST"))
             {
                 request.uploadHandler = new UploadHandlerRaw(bodyRaw);
@@ -215,7 +222,7 @@ public class QuestionGenerator : MonoBehaviour
             int j = Random.Range(i, answers.Count);
             (answers[i], answers[j]) = (answers[j], answers[i]);
         }
-
+        //assign answers onto UI buttons
         for (int k = 0; k < ansButtons.Length; k++)
             ansButtons[k].text = answers[k];
 
@@ -225,7 +232,7 @@ public class QuestionGenerator : MonoBehaviour
         isGenerating = false;
      
     }
-
+    //shows animated loading text while waiting
     IEnumerator LoadingText()
     {
         while (true)
@@ -238,6 +245,7 @@ public class QuestionGenerator : MonoBehaviour
             yield return new WaitForSeconds(0.3f);
         }
     }
+    //starts countdown timer for question
     IEnumerator StartTimer(int secs)
     {
         //check if qpanel is closed even after timer started
@@ -263,6 +271,7 @@ public class QuestionGenerator : MonoBehaviour
 
             }
         }
+        //if timer runs out 
         timerText.text = "TIMES UP!";
         if (timerTickSound.isPlaying)
         {
@@ -281,6 +290,7 @@ public class QuestionGenerator : MonoBehaviour
 
     }
 
+    //called when answer is selected, it checks it here
     public void CheckAns(string chosenAns)
     {
         isAnswered = true;
@@ -307,10 +317,11 @@ public class QuestionGenerator : MonoBehaviour
                 UpdateHealthBarFill(health);
                 if (incorrectSound != null) incorrectSound.Play();
             }
-            //this now stores the relevant data of our questions inside of a list
+            //this now stores the relevant data of users' question and answer inside of a list
             questionHistory.Add(new QuestionData(questionText.text, chosenAns, correctAns, correct));
         }
 
+        //update level based on points
         int previousLevel = level;
         if (points >= 0 && points <= 4)
         {
@@ -332,17 +343,19 @@ public class QuestionGenerator : MonoBehaviour
         StartCoroutine(QPanelClose());
 
     }
-
+    //called when any answer button is pressed
     public void OnButtonPressed(int i)
     {
         Debug.Log(ansButtons[i]);
         CheckAns(ansButtons[i].text);
 
     }
+
+    //lets player manually close the question panel
     public void OnCloseButtonPressed()
     {
         //this ensures that even if you close the QPanel manually,
-        //the timer is set to null so a health doesnt decremenet even if you didnt answer
+        //the timer is set to null so health doesnt decremenet even if you didnt answer
         if (timerCoroutine != null)
         {
             StopCoroutine(timerCoroutine);
@@ -359,6 +372,7 @@ public class QuestionGenerator : MonoBehaviour
         StartCoroutine(QPanelClose());
     }
 
+    //hides question panel and called to reset the UI after answer or timeout
     IEnumerator QPanelClose()
     {
         QPanel.SetActive(false);
@@ -373,6 +387,7 @@ public class QuestionGenerator : MonoBehaviour
         mathsBoxManager.RandomLocation();
     }
 
+    //updates main screen UI elements
     public void UpdateMainScreenOverlay()
     {
         levelText.text = $"Level: {level}";
@@ -380,9 +395,9 @@ public class QuestionGenerator : MonoBehaviour
         healthBar.text = $"{health}";
     }
 
+    //returns list of type QuestionData with relevant q/a info
     public List<QuestionData> GetQuestionHistoryValues()
     {
-        //returns list of type QuestionData with relevant q/a info
         return questionHistory;
     }
 
@@ -398,11 +413,14 @@ public class QuestionGenerator : MonoBehaviour
             KeyImage.color = iconColor;
         }
     }
+
+    //called to reflect key status on UI
     public void UpdateKeyImageColour()
     {
         SetKeyFaded(!hasKey);
     }
 
+    //collecting key sets the flag to true
     public void CollectKey()
     {
         hasKey = true;
@@ -446,7 +464,7 @@ public class QuestionGenerator : MonoBehaviour
         }
     }
 
-
+    //resets everything if the player restarts the game
     public void ResetPlayer()
     {
         health = maxHealth;
