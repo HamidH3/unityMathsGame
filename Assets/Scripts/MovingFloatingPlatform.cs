@@ -24,28 +24,24 @@ public class MovingFloatingPlatform : MonoBehaviour
     {
         startPos = transform.position;
 
-        // Set the target position based on movement type
         SetTargetPos();
 
-        // Ensure that the platform starts moving immediately
+        // ensure that the platform starts moving immediately
         lastPos = transform.position;
 
-        // Start moving the platform right away
         if (movementType == MovementType.horizontal)
         {
-            // Adjust for an immediate move, even if it starts near the end
             transform.position = startPos + new Vector3(0.1f, 0f, 0f);
         }
         else if (movementType == MovementType.vertical)
         {
-            // Adjust for an immediate move, even if it starts near the end
             transform.position = startPos + new Vector3(0f, 0.1f, 0f);
         }
     }
 
     void Update()
     {
-        // Call the appropriate movement function
+        // call the appropriate movement function
         switch (movementType)
         {
             case MovementType.horizontal:
@@ -56,7 +52,7 @@ public class MovingFloatingPlatform : MonoBehaviour
                 break;
         }
 
-        // Calculate delta movement
+        // calculate delta movement
         deltaMovement = transform.position - lastPos;
         lastPos = transform.position;
     }
@@ -78,11 +74,11 @@ public class MovingFloatingPlatform : MonoBehaviour
     {
         if (movementType == MovementType.horizontal)
         {
-            endPos = startPos + new Vector3(moveDistance, 0f, 0f);  // Move horizontally
+            endPos = startPos + new Vector3(moveDistance, 0f, 0f);  
         }
         else if (movementType == MovementType.vertical)
         {
-            endPos = startPos + new Vector3(0f, moveDistance, 0f);  // Move vertically
+            endPos = startPos + new Vector3(0f, moveDistance, 0f); 
         }
     }
 }

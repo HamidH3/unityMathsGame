@@ -9,7 +9,6 @@ public class ControlsPauseMenu : MonoBehaviour
     public GameObject settingsPanel;
     public List<GameObject> questionHistoryObjects;
     public List<GameObject> controlInstructions;
-    //public Narrator narrator;
     public Slider volumeSlider;
     public Slider soundEffectsSlider;
 
@@ -113,7 +112,6 @@ public class ControlsPauseMenu : MonoBehaviour
         {
             button.SetActive(true);
         }
-        //currentState = MenuState.None;
     }
 
     private void OnVolumeChanged(float masterVolume)

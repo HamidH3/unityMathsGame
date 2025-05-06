@@ -122,7 +122,6 @@ public class QuestionGenerator : MonoBehaviour
     IEnumerator CallGPTForQuestion()
     {
         isGenerating = true;
-        //questionText.text = "Generating question...";
         isAnswered = false;
         Coroutine loadingText = StartCoroutine(LoadingText());
 

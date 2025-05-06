@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class MathsBoxManager : MonoBehaviour
 {
+    //assigns maths box objects
     public GameObject MathsBox1;
     public GameObject MathsBox2;
     public GameObject MathsBox3;
 
     private int randomNumber;
-    // Start is called before the first frame update
 
     public void Start()
     {
@@ -18,7 +18,7 @@ public class MathsBoxManager : MonoBehaviour
         MathsBox3.SetActive(false);
         RandomLocation();
     }
-
+    //generates a random location for maths boxes to appear
     public void RandomLocation()
     {
         randomNumber = Random.Range(0, 3);
@@ -43,7 +43,7 @@ public class MathsBoxManager : MonoBehaviour
             MathsBox3.SetActive(true);
         }     
     }
-
+    //ensures that a new location is assigned
     public void CheckValid()
     {
         

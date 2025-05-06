@@ -212,7 +212,6 @@ public class Player : MonoBehaviour
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Wall"))
-        //&& !isGrounded
         {
             isTouchingWall = true;
         }
@@ -230,12 +229,8 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("FloatingPlatform"))
         {
             // Make sure to unparent the player from the platform only if the platform is active
-            //if (collision.gameObject.activeInHierarchy)
-            //{
-            //transform.SetParent(null);
             currPlatform = null;
-            //}
-            //}
+
         }
 
         if (collision.gameObject.CompareTag("Ground"))

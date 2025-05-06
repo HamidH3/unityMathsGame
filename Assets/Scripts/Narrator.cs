@@ -19,7 +19,7 @@ public class Narrator : MonoBehaviour
             messageCoroutine = StartCoroutine(TypeWriterEffect(message));
         }
     }
-
+    //uses coroutine and IEnumerator return type method for async operations
     private IEnumerator TypeWriterEffect(string msg)
     {
         messageText.text = "";

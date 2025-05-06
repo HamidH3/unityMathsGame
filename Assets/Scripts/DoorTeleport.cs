@@ -7,6 +7,7 @@ public class DoorTeleport : MonoBehaviour
     public DoorTeleport goToDoor;
     public Transform exitPoint;
     
+    //transforms position of player when they enter door
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))

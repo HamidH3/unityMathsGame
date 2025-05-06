@@ -22,6 +22,7 @@ public class OpenShop : MonoBehaviour
             OpenPanel.SetActive(false);
         }
     }
+    //content is called when game object is clicked
     private void OnMouseDown()
     {
         if (questionGenerator != null && questionGenerator.HasKey)
